@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViewPay | 모든 조회수를 수익으로, 모든 예산을 성과로</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Michroma:wght@400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <style>
+        :root {
+            --bg-dark: #0D0D12;
+            --text-white: #FFFFFF;
+            --text-light: #AFA9EC;
+            --purple: #534AB7;
+            --teal: #1D9E75;
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            word-break: keep-all;
+        }
+
+        /* Animated Aurora Background */
+        .aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            filter: blur(140px);
+            opacity: 0.12;
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+
+        .blob-1 {
+            background: radial-gradient(circle, var(--purple) 0%, transparent 70%);
+            top: -20%;
+            left: -20%;
+            animation: move-1 35s infinite alternate ease-in-out;
+        }
+
+        .blob-2 {
+            background: radial-gradient(circle, var(--teal) 0%, transparent 70%);
+            bottom: -20%;
+            right: -20%;
+            animation: move-2 45s infinite alternate ease-in-out;
+        }
+
+        @keyframes move-1 {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            33% { transform: translate(20%, 10%) scale(1.2) rotate(10deg); }
+            66% { transform: translate(-10%, 20%) scale(0.8) rotate(-10deg); }
+            100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+        }
+
+        @keyframes move-2 {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            33% { transform: translate(-20%, -10%) scale(1.3) rotate(-15deg); }
+            66% { transform: translate(15%, -25%) scale(0.9) rotate(15deg); }
+            100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+        }
+
+        /* Noise Texture Overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.025;
+            pointer-events: none;
+            z-index: 1;
+            animation: noise-anim 0.2s infinite steps(2);
+        }
+
+        @keyframes noise-anim {
+            0% { transform: translate(0,0); }
+            10% { transform: translate(-1%,-1%); }
+            20% { transform: translate(1%,1%); }
+            30% { transform: translate(-2%,1%); }
+            40% { transform: translate(1%,-2%); }
+            50% { transform: translate(-1%,1%); }
+            60% { transform: translate(-2%,2%); }
+            70% { transform: translate(2%,1%); }
+            80% { transform: translate(1%,-1%); }
+            90% { transform: translate(-1%,2%); }
+            100% { transform: translate(0,0); }
+        }
+
+        main {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Michroma', sans-serif;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+        }
+
+        h1 { font-size: clamp(48px, 10vw, 84px); font-weight: 700; }
+        h2 { font-size: clamp(32px, 6vw, 56px); }
+        .dm-mono { font-family: 'DM Mono', monospace; }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(13, 13, 18, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 16px 24px;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            text-decoration: none;
+            font-family: 'Michroma', sans-serif;
+            letter-spacing: -0.02em;
+            color: var(--text-white);
+        }
+
+        .logo-pay { color: var(--text-light); }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        /* Language Switcher */
+        .lang-switch {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .lang-btn {
+            padding: 4px 12px;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .lang-btn.active {
+            background: rgba(175, 169, 236, 0.25);
+            color: var(--text-light);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border: 1.5px solid var(--text-light);
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .nav-btn:hover {
+            background: var(--text-light);
+            color: var(--bg-dark);
+            transform: scale(1.02);
+        }
+
+        /* Sections */
+        section {
+            position: relative;
+            z-index: 1;
+            padding: 100px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-top: 100px;
+        }
+
+        .hero h1 { margin-bottom: 24px; line-height: 1.15; }
+        .hero-line { display: block; transition: transform 0.1s ease-out; }
+        
+        .hero-subtext {
+            font-size: clamp(16px, 2.5vw, 22px);
+            color: var(--text-light);
+            margin-bottom: 48px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 32px 24px;
+            border-radius: 20px;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            width: 288px; /* 320px의 90% */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 162px; /* 180px의 90% */
+        }
+
+        .stat-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(175, 169, 236, 0.4);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .stat-number {
+            font-family: 'DM Mono', monospace;
+            font-size: 32px; /* 폰트 크기 증가 */
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 12px;
+        }
+
+        .stat-label { font-size: 14.4px; color: rgba(255, 255, 255, 0.6); letter-spacing: 0.05em; } /* 12px의 1.2배 */
+
+        .scroll-indicator { margin-top: 40px; animation: bounce 2s infinite; opacity: 0.5; }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-12px); }
+            60% { transform: translateY(-6px); }
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            background: rgba(255, 255, 255, 0.01);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .section-title { text-align: center; margin-bottom: 60px; }
+        .flows-container { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+        .flow-title { font-size: 20px; margin-bottom: 40px; color: var(--text-light); }
+        .step { margin-bottom: 40px; display: flex; gap: 24px; transition: all 0.3s ease; }
+        .step-num {
+            flex-shrink: 0;
+            font-family: 'DM Mono', monospace;
+            font-size: 32px;
+            font-weight: 600;
+            color: rgba(175, 169, 236, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .step-content h4 { font-size: 18px; margin-bottom: 8px; font-family: 'Michroma', sans-serif; letter-spacing: -0.02em; }
+        .step-content p { font-size: 15px; color: rgba(255, 255, 255, 0.7); }
+
+        /* Value Proposition Cards */
+        .value-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .value-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 48px;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .value-card:hover { transform: translateY(-8px); border-color: rgba(175, 169, 236, 0.2); }
+        .value-card h3 { font-size: 24px; margin-bottom: 28px; }
+        .value-list { list-style: none; }
+        .value-list li { margin-bottom: 16px; display: flex; align-items: flex-start; gap: 12px; font-size: 15px; color: rgba(255, 255, 255, 0.8); }
+        .value-list li::before { content: '✓'; flex-shrink: 0; color: var(--text-light); font-weight: 700; margin-top: 2px; }
+
+        /* Waitlist Section */
+        .waitlist-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 48px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .waitlist-title { text-align: center; margin-bottom: 40px; }
+        .toggle-group { display: flex; background: rgba(255, 255, 255, 0.05); padding: 4px; border-radius: 10px; margin-bottom: 32px; border: 1px solid rgba(255, 255, 255, 0.08); }
+        .toggle-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        .toggle-btn.active { background: rgba(175, 169, 236, 0.15); color: var(--text-light); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-white); }
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            color: var(--text-white);
+            font-family: 'Pretendard', sans-serif;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus { outline: none; border-color: rgba(175, 169, 236, 0.5); }
+        .error-msg { color: #FF6B6B; font-size: 12px; margin-top: 4px; display: none; }
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--text-light);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            margin-top: 8px;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        .success-state { display: none; text-align: center; padding: 40px 0; }
+
+        /* Calc Box */
+        .calc-box {
+            background: rgba(175, 169, 236, 0.07);
+            border: 1px solid rgba(175, 169, 236, 0.2);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-top: 10px;
+            display: none;
+        }
+        .calc-box-label {
+            font-size: 11px;
+            color: rgba(175, 169, 236, 0.7);
+            font-family: 'DM Mono', monospace;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+        .calc-box-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-light);
+            font-family: 'DM Mono', monospace;
+        }
+        .calc-box-desc {
+            font-size: 11px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 3px;
+        }
+        .form-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .form-group input[type="number"]::-webkit-outer-spin-button,
+        .form-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .input-with-unit {
+            position: relative;
+        }
+        .input-with-unit input {
+            padding-right: 44px;
+        }
+        .input-unit {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px;
+            color: rgba(255,255,255,0.4);
+            pointer-events: none;
+        }
+
+        /* Footer */
+        footer { padding: 60px 24px; border-top: 1px solid rgba(255, 255, 255, 0.05); text-align: center; }
+        .footer-logo { font-family: 'Michroma', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.02em; }
+        .footer-logo-pay { color: var(--text-light); }
+        .footer-text { font-size: 13px; color: rgba(255, 255, 255, 0.5); margin-bottom: 8px; }
+        .privacy-text { font-size: 12px; color: rgba(255, 255, 255, 0.4); }
+
+        /* Animations */
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        /* Language Display Logic */
+        [data-lang] { display: none; }
+        
+        /* Show KO content by default or when lang="ko" */
+        html:not([lang="en"]) [data-lang="ko"],
+        html[lang="ko"] [data-lang="ko"] { display: block; }
+        html:not([lang="en"]) span[data-lang="ko"],
+        html[lang="ko"] span[data-lang="ko"] { display: inline; }
+        html:not([lang="en"]) li[data-lang="ko"],
+        html[lang="ko"] li[data-lang="ko"] { display: flex; }
+        
+        /* Show EN content only when lang="en" */
+        html[lang="en"] [data-lang="en"] { display: block; }
+        html[lang="en"] span[data-lang="en"] { display: inline; }
+        html[lang="en"] li[data-lang="en"] { display: flex; }
+        
+        /* Hide KO when EN is active */
+        html[lang="en"] [data-lang="ko"] { display: none; }
+        html[lang="en"] span[data-lang="ko"] { display: none; }
+        html[lang="en"] li[data-lang="ko"] { display: none; }
+
+        @media (max-width: 768px) {
+            .flows-container, .value-cards { grid-template-columns: 1fr; }
+            .hero { min-height: auto; padding-top: 120px; padding-bottom: 60px; }
+            section { padding: 60px 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aurora-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <nav>
+        <div class="nav-content">
+            <a href="#" class="logo">View<span class="logo-pay">Pay</span></a>
+            <div class="nav-right">
+                <div class="lang-switch">
+                    <button class="lang-btn active" id="btn-ko" onclick="setLanguage('ko')">KR</button>
+                    <button class="lang-btn" id="btn-en" onclick="setLanguage('en')">EN</button>
+                </div>
+                <a href="#waitlist" class="nav-btn" data-lang="ko">대기자 등록</a>
+                <a href="#waitlist" class="nav-btn" data-lang="en">Join Waitlist</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero fade-in">
+            <h1>
+                <span class="hero-line" data-lang="ko">조회수가</span>
+                <span class="hero-line" data-lang="ko">곧 수익입니다</span>
+                <span class="hero-line" data-lang="en">Views become</span>
+                <span class="hero-line" data-lang="en">Revenue</span>
+            </h1>
+            <p class="hero-subtext">
+                <span data-lang="ko">모든 조회수를 수익으로, 모든 예산을 성과로.</span>
+                <span data-lang="en">Monetize every view, optimize every spend.</span>
+            </p>
+            
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-number dm-mono"><span class="counter" data-target="1000">0</span><span data-lang="ko">회</span><span data-lang="en"> Views</span></div>
+                    <div class="stat-label" data-lang="ko">1,000회 조회당 ₩1,000~</div>
+                    <div class="stat-label" data-lang="en">₩1,000+ PER 1K VIEWS</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number dm-mono">₩<span class="counter" data-target="100000">0</span></div>
+                    <div class="stat-label" data-lang="ko">최소 캠페인 예산</div>
+                    <div class="stat-label" data-lang="en">MINIMUM BUDGET</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number dm-mono">100%</div>
+                    <div class="stat-label" data-lang="ko">성과 기반 결제</div>
+                    <div class="stat-label" data-lang="en">PERFORMANCE BASED</div>
+                </div>
+            </div>
+
+            <div class="scroll-indicator">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+                </svg>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="how-it-works fade-in">
+            <h2 class="section-title" data-lang="ko">이용 방법</h2>
+            <h2 class="section-title" data-lang="en">How it works</h2>
+            
+            <div class="flows-container">
+                <div>
+                    <h3 class="flow-title" data-lang="ko">광고주</h3>
+                    <h3 class="flow-title" data-lang="en">Advertisers</h3>
+                    <div class="step">
+                        <div class="step-num">01</div>
+                        <div class="step-content">
+                            <h4 data-lang="ko">캠페인 생성</h4>
+                            <h4 data-lang="en">Create Campaign</h4>
+                            <p data-lang="ko">마케팅 목표와 예산을 설정하고 캠페인을 등록합니다.</p>
+                            <p data-lang="en">Set your marketing goals and budget to launch a campaign.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">02</div>
+                        <div class="step-content">
+                            <h4 data-lang="ko">크리에이터 영상 업로드</h4>
+                            <h4 data-lang="en">Creator Uploads</h4>
+                            <p data-lang="ko">수많은 크리에이터들이 제품/서비스의 숏폼 영상을 제작하여 공유합니다.</p>
+                            <p data-lang="en">Creators produce and share short-form videos for your brand.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">03</div>
+                        <div class="step-content">
+                            <h4 data-lang="ko">조회수만큼 자동 정산</h4>
+                            <h4 data-lang="en">Auto Settlement</h4>
+                            <p data-lang="ko">실제로 발생한 조회수 성과에 대해서만 비용이 차감됩니다.</p>
+                            <p data-lang="en">Pay only for the actual views generated by the creators.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="flow-title" data-lang="ko">크리에이터</h3>
+                    <h3 class="flow-title" data-lang="en">Creators</h3>
+                    <div class="step">
+                        <div class="step-num">01</div>
+                        <div class="step-content">
+                            <h4 data-lang="ko">캠페인 선택</h4>
+                            <h4 data-lang="en">Select Campaign</h4>
+                            <p data-lang="ko">자신의 채널 성격에 맞는 광고 캠페인을 자유롭게 선택합니다.</p>
+                            <p data-lang="en">Choose campaigns that match your content style and audience.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">02</div>
+                        <div class="step-content">
+                            <h4 data-lang="ko">숏폼 영상 제작 후 업로드</h4>
+                            <h4 data-lang="en">Create & Upload</h4>
+                            <p data-lang="ko">영상을 제작하여 틱톡, 인스타그램, 유튜브에 업로드합니다.</p>
+                            <p data-lang="en">Create short-form videos and post them on TikTok, IG, or Shorts.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">03</div>
+                        <div class="step-content">
+                            <h4 data-lang="ko">조회수 수익 수령</h4>
+                            <h4 data-lang="en">Earn Revenue</h4>
+                            <p data-lang="ko">영상의 조회수 성과에 따라 투명하게 정산된 수익을 받습니다.</p>
+                            <p data-lang="en">Get paid transparently based on the views you generate.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Value Proposition -->
+        <section class="value-section fade-in">
+            <div class="value-cards">
+                <div class="value-card">
+                    <h3 data-lang="ko">크리에이터</h3>
+                    <h3 data-lang="en">Creators</h3>
+                    <ul class="value-list">
+                        <li data-lang="ko">팔로워 무관 참여</li>
+                        <li data-lang="en">Join regardless of follower count</li>
+                        <li data-lang="ko">틱톡·인스타·유튜브 쇼츠 모두 인정</li>
+                        <li data-lang="en">TikTok, Instagram, YouTube Shorts</li>
+                        <li data-lang="ko">투명한 자동 정산</li>
+                        <li data-lang="en">Transparent automated settlement</li>
+                    </ul>
+                </div>
+                <div class="value-card">
+                    <h3 data-lang="ko">광고주</h3>
+                    <h3 data-lang="en">Advertisers</h3>
+                    <ul class="value-list">
+                        <li data-lang="ko">10만 원부터 시작</li>
+                        <li data-lang="en">Start from ₩100,000</li>
+                        <li data-lang="ko">조회수 발생 시에만 비용 청구</li>
+                        <li data-lang="en">Pay only for actual views</li>
+                        <li data-lang="ko">실시간 성과 대시보드</li>
+                        <li data-lang="en">Real-time performance dashboard</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Waitlist Form -->
+        <section id="waitlist" class="waitlist-section fade-in">
+            <div class="waitlist-card">
+                <div class="waitlist-title">
+                    <h2 data-lang="ko">지금 등록하고<br>가장 먼저 시작하세요</h2>
+                    <h2 data-lang="en">Join the waitlist<br>to get early access</h2>
+                </div>
+
+                <form id="waitlistForm">
+                    <input type="hidden" name="type" id="userType" value="creator">
+                    
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn active" data-type="creator">
+                            <span data-lang="ko">크리에이터</span><span data-lang="en">Creator</span>
+                        </button>
+                        <button type="button" class="toggle-btn" data-type="advertiser">
+                            <span data-lang="ko">광고주</span><span data-lang="en">Advertiser</span>
+                        </button>
+                    </div>
+
+                    <!-- 공통: 이름 -->
+                    <div class="form-group">
+                        <label>
+                            <span data-lang="ko">이름</span><span data-lang="en">Name</span>
+                        </label>
+                        <input type="text" id="name" name="name">
+                        <div class="error-msg" id="nameError">
+                            <span data-lang="ko">이름을 입력해주세요.</span><span data-lang="en">Please enter your name.</span>
+                        </div>
+                    </div>
+
+                    <!-- 공통: 이메일 -->
+                    <div class="form-group">
+                        <label>
+                            <span data-lang="ko">이메일</span><span data-lang="en">Email</span>
+                        </label>
+                        <input type="email" id="email" name="email">
+                        <div class="error-msg" id="emailError">
+                            <span data-lang="ko">올바른 이메일을 입력해주세요.</span><span data-lang="en">Please enter a valid email.</span>
+                        </div>
+                    </div>
+
+                    <!-- 크리에이터 전용 필드 -->
+                    <div id="creatorFields">
+                        <div class="form-group" id="snsGroup">
+                            <label>
+                                <span data-lang="ko">SNS 계정</span><span data-lang="en">SNS Handle</span>
+                            </label>
+                            <input type="text" id="sns" name="sns" placeholder="@handle">
+                            <div class="error-msg" id="snsError">
+                                <span data-lang="ko">SNS 계정을 입력해주세요.</span><span data-lang="en">Please enter your SNS handle.</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <span data-lang="ko">현재 조회수 (영상 최고 조회수)</span><span data-lang="en">Current Max Views</span>
+                            </label>
+                            <div class="input-with-unit">
+                                <input type="text" id="currentViews" name="current_views" placeholder="0">
+                                <span class="input-unit"><span data-lang="ko">회</span><span data-lang="en">views</span></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <span data-lang="ko">목표 조회수</span><span data-lang="en">Target Views</span>
+                            </label>
+                            <div class="input-with-unit">
+                                <input type="text" id="targetViews" name="target_views" placeholder="0">
+                                <span class="input-unit"><span data-lang="ko">회</span><span data-lang="en">views</span></span>
+                            </div>
+                            <div class="calc-box" id="creatorCalcBox">
+                                <div class="calc-box-label"><span data-lang="ko">예상 수익 (1,000회당 ₩1,000 기준)</span><span data-lang="en">Est. Revenue (₩1,000 per 1K views)</span></div>
+                                <div class="calc-box-value" id="creatorCalcValue">₩0</div>
+                                <div class="calc-box-desc"><span data-lang="ko">목표 조회수 달성 시 예상 수익입니다.</span><span data-lang="en">Estimated revenue upon reaching target views.</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 광고주 전용 필드 -->
+                    <div id="advertiserFields" style="display: none;">
+                        <div class="form-group" id="companyGroup">
+                            <label>
+                                <span data-lang="ko">상호명</span><span data-lang="en">Company Name</span>
+                            </label>
+                            <input type="text" id="company" name="company">
+                            <div class="error-msg" id="companyError">
+                                <span data-lang="ko">상호명을 입력해주세요.</span><span data-lang="en">Please enter your company name.</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <span data-lang="ko">마케팅 예산</span><span data-lang="en">Marketing Budget</span>
+                            </label>
+                            <div class="input-with-unit">
+                                <input type="text" id="budget" name="budget" placeholder="0">
+                                <span class="input-unit">₩</span>
+                            </div>
+                            <div class="calc-box" id="advertiserCalcBox">
+                                <div class="calc-box-label"><span data-lang="ko">예상 조회수 (1,000회당 ₩1,000 기준)</span><span data-lang="en">Est. Views (₩1,000 per 1K views)</span></div>
+                                <div class="calc-box-value" id="advertiserCalcValue">0 <span data-lang="ko">회</span><span data-lang="en">views</span></div>
+                                <div class="calc-box-desc"><span data-lang="ko">예산 전액 사용 시 예상 조회수입니다.</span><span data-lang="en">Estimated views if full budget is used.</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <span data-lang="ko">대기자 등록하기</span><span data-lang="en">Join Waitlist</span>
+                    </button>
+                </form>
+
+                <div id="successState" class="success-state">
+                    <h3 data-lang="ko">등록이 완료되었습니다!</h3>
+                    <h3 data-lang="en">Registration Complete!</h3>
+                    <p data-lang="ko">ViewPay의 소식을 가장 먼저 전해드리겠습니다.</p>
+                    <p data-lang="en">We'll notify you as soon as we launch.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-logo">View<span class="footer-logo-pay">Pay</span></div>
+        <p class="footer-text" data-lang="ko">© 2026 ViewPay. All rights reserved.</p>
+        <p class="footer-text" data-lang="en">© 2026 ViewPay. All rights reserved.</p>
+        <p class="privacy-text" data-lang="ko">수집된 정보는 서비스 오픈 알림 외 사용되지 않습니다.</p>
+        <p class="privacy-text" data-lang="en">Your info will only be used for launch notifications.</p>
+    </footer>
+
+    <script>
+        // Set initial language
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentLang = document.documentElement.getAttribute('lang') || 'ko';
+            setLanguage(currentLang);
+        });
+
+        // Language Switcher
+        function setLanguage(lang) {
+            document.documentElement.setAttribute('lang', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('btn-' + lang).classList.add('active');
+            document.title = lang === 'ko' ? 'ViewPay | 모든 조회수를 수익으로' : 'ViewPay | Views become Revenue';
+        }
+
+        // Intersection Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { 
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.fade-in').forEach(el => {
+            // Check if element is already in viewport
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom >= 0) {
+                el.classList.add('visible');
+            } else {
+                observer.observe(el);
+            }
+        });
+
+        // Counter animation
+        const counters = document.querySelectorAll('.counter');
+        let hasAnimated = false;
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !hasAnimated) {
+                    hasAnimated = true;
+                    counters.forEach(counter => {
+                        const target = parseInt(counter.dataset.target);
+                        const duration = 2000;
+                        const start = Date.now();
+                        const animate = () => {
+                            const elapsed = Date.now() - start;
+                            const progress = Math.min(elapsed / duration, 1);
+                            counter.textContent = Math.floor(progress * target).toLocaleString();
+                            if (progress < 1) requestAnimationFrame(animate);
+                        };
+                        animate();
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+        document.querySelector('.stats-container') && counterObserver.observe(document.querySelector('.stats-container'));
+
+        // Toggle buttons
+        const toggleBtns = document.querySelectorAll('.toggle-btn');
+        const userTypeInput = document.getElementById('userType');
+        const creatorFields = document.getElementById('creatorFields');
+        const advertiserFields = document.getElementById('advertiserFields');
+
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const type = btn.dataset.type;
+                userTypeInput.value = type;
+                creatorFields.style.display = type === 'creator' ? 'block' : 'none';
+                advertiserFields.style.display = type === 'advertiser' ? 'block' : 'none';
+            });
+        });
+
+        // Utility to format number with commas
+        function formatNumber(val) {
+            if (!val) return "";
+            const num = val.toString().replace(/,/g, "");
+            if (isNaN(num)) return val;
+            return Number(num).toLocaleString();
+        }
+
+        // Apply comma formatting to inputs
+        const commaInputs = ['currentViews', 'targetViews', 'budget'];
+        commaInputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', function(e) {
+                    // 현재 커서 위치 저장
+                    let cursor = this.selectionStart;
+                    let oldLength = this.value.length;
+                    
+                    // 숫자만 추출
+                    let rawValue = this.value.replace(/[^0-9]/g, '');
+                    
+                    if (rawValue === "") {
+                        this.value = "";
+                        return;
+                    }
+
+                    // 콤마 포맷팅
+                    let formatted = Number(rawValue).toLocaleString();
+                    this.value = formatted;
+                    
+                    // 커서 위치 보정 (콤마 추가/삭제에 따른 보정)
+                    let newLength = formatted.length;
+                    cursor = cursor + (newLength - oldLength);
+                    this.setSelectionRange(cursor, cursor);
+                });
+            }
+        });
+
+        // Realtime calc - Advertiser budget
+        const budgetInput = document.getElementById('budget');
+        budgetInput.addEventListener('input', () => {
+            const rawValue = budgetInput.value.replace(/,/g, "");
+            const budget = parseFloat(rawValue) || 0;
+            const calcBox = document.getElementById('advertiserCalcBox');
+            const calcVal = document.getElementById('advertiserCalcValue');
+            if (budget > 0) {
+                const views = Math.floor(budget / 1000) * 1000;
+                calcVal.innerHTML = views.toLocaleString() + ' <span data-lang="ko">회</span><span data-lang="en">views</span>';
+                calcBox.style.display = 'block';
+            } else {
+                calcBox.style.display = 'none';
+            }
+        });
+
+        // Realtime calc - Creator target views
+        const targetViewsInput = document.getElementById('targetViews');
+        targetViewsInput.addEventListener('input', () => {
+            const rawValue = targetViewsInput.value.replace(/,/g, "");
+            const views = parseFloat(rawValue) || 0;
+            const calcBox = document.getElementById('creatorCalcBox');
+            const calcVal = document.getElementById('creatorCalcValue');
+            if (views > 0) {
+                const revenue = Math.floor(views / 1000) * 1000;
+                calcVal.textContent = '₩' + revenue.toLocaleString();
+                calcBox.style.display = 'block';
+            } else {
+                calcBox.style.display = 'none';
+            }
+        });
+
+        // Form submission
+        const form = document.getElementById('waitlistForm');
+        const successState = document.getElementById('successState');
+        const YOUR_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcugx39FXi5sEyBL_iFpMK7Bez5Q_-G6-d81qF6laD5zoMSmutU_m389i0oKIVusA/exec';
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const type = userTypeInput.value;
+            const sns = document.getElementById('sns').value.trim();
+            const company = document.getElementById('company').value.trim();
+            const currentViews = document.getElementById('currentViews').value.replace(/,/g, "").trim();
+            const targetViews = document.getElementById('targetViews').value.replace(/,/g, "").trim();
+            const budget = document.getElementById('budget').value.replace(/,/g, "").trim();
+            let hasError = false;
+            if (!name) { document.getElementById('nameError').style.display = 'block'; hasError = true; }
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('emailError').style.display = 'block'; hasError = true; }
+            if (type === 'creator' && !sns) { document.getElementById('snsError').style.display = 'block'; hasError = true; }
+            if (type === 'advertiser' && !company) { document.getElementById('companyError').style.display = 'block'; hasError = true; }
+            if (hasError) return;
+            const submitBtn = form.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            const payload = type === 'creator'
+                ? { type, name, email, sns, current_views: currentViews, target_views: targetViews }
+                : { type, name, email, company, budget };
+            try {
+                await fetch(YOUR_APPS_SCRIPT_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                form.style.display = 'none';
+                successState.style.display = 'block';
+            } catch (error) {
+                form.style.display = 'none';
+                successState.style.display = 'block';
+            }
+        });
+
+        // Parallax effect
+        const heroLines = document.querySelectorAll('.hero-line');
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) - 0.5;
+            const y = (e.clientY / window.innerHeight) - 0.5;
+            heroLines.forEach((line, index) => {
+                line.style.transform = `translate(${x * (index + 1) * 8}px, ${y * (index + 1) * 8}px)`;
+            });
+        });
+
+        // Magnetic button
+        const submitBtn = form.querySelector('.submit-btn');
+        submitBtn.addEventListener('mousemove', (e) => {
+            const rect = submitBtn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            if (Math.sqrt(x*x + y*y) < 80) submitBtn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+        });
+        submitBtn.addEventListener('mouseleave', () => { submitBtn.style.transform = 'translate(0, 0)'; });
+    </script>
+</body>
+</html>
