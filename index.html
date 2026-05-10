@@ -3,1131 +3,1306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ViewPay | 모든 조회수를 수익으로, 모든 예산을 성과로</title>
-    <!-- Fonts -->
+    <title>ViewPay | 조회수를 수익으로, 캠페인을 성과로</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Michroma:wght@400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
         :root {
-            --bg-dark: #0D0D12;
-            --text-white: #FFFFFF;
-            --text-light: #AFA9EC;
-            --purple: #534AB7;
-            --teal: #1D9E75;
-            --glass-bg: rgba(255, 255, 255, 0.04);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --bg: #07080D;
+            --bg-card: #10121A;
+            --bg-card-2: #151824;
+            --border: rgba(255,255,255,0.09);
+            --border-accent: rgba(53,242,154,0.25);
+            --mint: #35F29A;
+            --mint-dim: rgba(53,242,154,0.15);
+            --mint-glow: rgba(53,242,154,0.08);
+            --purple: #8B5CF6;
+            --purple-dim: rgba(139,92,246,0.15);
+            --text: #F6F8FB;
+            --text-muted: #9AA3B2;
+            --text-dim: rgba(246,248,251,0.45);
+            --radius: 14px;
+            --radius-sm: 8px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-white);
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.6;
             overflow-x: hidden;
-            position: relative;
             word-break: keep-all;
         }
 
-        /* Animated Aurora Background */
-        .aurora-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            overflow: hidden;
-            pointer-events: none;
+        /* Language visibility */
+        [data-lang] {
+            transition: opacity 0.18s ease;
         }
 
+        html[lang="ko"] [data-lang="en"],
+        html[lang="en"] [data-lang="ko"] {
+            display: none !important;
+        }
+
+        /* Keep the background clean and aurora-led */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 50% 0%, rgba(255,255,255,0.035), transparent 34rem),
+                linear-gradient(180deg, rgba(255,255,255,0.012), transparent 38%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Animated aurora background */
+        .aurora-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
         .blob {
             position: absolute;
             width: 100vw;
             height: 100vh;
-            filter: blur(140px);
-            opacity: 0.12;
+            filter: blur(150px);
+            opacity: 0.14;
             mix-blend-mode: screen;
             pointer-events: none;
         }
-
         .blob-1 {
-            background: radial-gradient(circle, var(--purple) 0%, transparent 70%);
-            top: -20%;
-            left: -20%;
-            animation: move-1 35s infinite alternate ease-in-out;
+            background: radial-gradient(circle, rgba(139,92,246,0.72) 0%, transparent 68%);
+            top: -34%;
+            left: -28%;
+            animation: aurora-one 36s infinite alternate ease-in-out;
         }
-
         .blob-2 {
-            background: radial-gradient(circle, var(--teal) 0%, transparent 70%);
-            bottom: -20%;
-            right: -20%;
-            animation: move-2 45s infinite alternate ease-in-out;
+            background: radial-gradient(circle, rgba(53,242,154,0.56) 0%, transparent 68%);
+            right: -32%;
+            bottom: -34%;
+            animation: aurora-two 46s infinite alternate ease-in-out;
         }
-
-        @keyframes move-1 {
+        @keyframes aurora-one {
             0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-            33% { transform: translate(20%, 10%) scale(1.2) rotate(10deg); }
-            66% { transform: translate(-10%, 20%) scale(0.8) rotate(-10deg); }
-            100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            35% { transform: translate(18%, 9%) scale(1.18) rotate(8deg); }
+            70% { transform: translate(-8%, 18%) scale(0.9) rotate(-10deg); }
+            100% { transform: translate(7%, -4%) scale(1.04) rotate(4deg); }
         }
-
-        @keyframes move-2 {
+        @keyframes aurora-two {
             0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-            33% { transform: translate(-20%, -10%) scale(1.3) rotate(-15deg); }
-            66% { transform: translate(15%, -25%) scale(0.9) rotate(15deg); }
-            100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            35% { transform: translate(-18%, -12%) scale(1.24) rotate(-12deg); }
+            70% { transform: translate(12%, -22%) scale(0.92) rotate(12deg); }
+            100% { transform: translate(-6%, 5%) scale(1.08) rotate(-4deg); }
         }
 
-        /* Noise Texture Overlay */
-        body::after {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            opacity: 0.025;
-            pointer-events: none;
-            z-index: 1;
-            animation: noise-anim 0.2s infinite steps(2);
-        }
+        main { position: relative; z-index: 2; }
 
-        @keyframes noise-anim {
-            0% { transform: translate(0,0); }
-            10% { transform: translate(-1%,-1%); }
-            20% { transform: translate(1%,1%); }
-            30% { transform: translate(-2%,1%); }
-            40% { transform: translate(1%,-2%); }
-            50% { transform: translate(-1%,1%); }
-            60% { transform: translate(-2%,2%); }
-            70% { transform: translate(2%,1%); }
-            80% { transform: translate(1%,-1%); }
-            90% { transform: translate(-1%,2%); }
-            100% { transform: translate(0,0); }
-        }
-
-        main {
-            position: relative;
-            z-index: 2;
-        }
-
-        /* Typography */
-        h1, h2, h3 {
-            font-family: 'Michroma', sans-serif;
-            letter-spacing: -0.04em;
-            line-height: 1.1;
-        }
-
-        h1 { font-size: clamp(48px, 10vw, 84px); font-weight: 700; }
-        h2 { font-size: clamp(32px, 6vw, 56px); }
-        .dm-mono { font-family: 'DM Mono', monospace; }
-
-        /* Navigation */
+        /* NAV */
         nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: rgba(13, 13, 18, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 16px 24px;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(7,8,13,0.85);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
         }
-
         .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center;
             justify-content: space-between;
-            align-items: center;
+            height: 60px;
         }
-
         .logo {
-            font-size: 20px;
-            font-weight: 700;
-            text-decoration: none;
-            font-family: 'Michroma', sans-serif;
+            font-family: 'Syne', sans-serif;
+            font-weight: 800; font-size: 19px;
+            text-decoration: none; color: var(--text);
             letter-spacing: -0.02em;
-            color: var(--text-white);
         }
-
-        .logo-pay { color: var(--text-light); }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        /* Language Switcher */
-        .lang-switch {
-            display: flex;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 4px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .lang-btn {
-            padding: 4px 12px;
-            border: none;
-            background: transparent;
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.2s;
-            font-family: 'DM Mono', monospace;
-        }
-
-        .lang-btn.active {
-            background: rgba(175, 169, 236, 0.25);
-            color: var(--text-light);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .nav-btn {
-            padding: 10px 20px;
-            border: 1.5px solid var(--text-light);
-            color: var(--text-light);
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-            cursor: pointer;
-            background: transparent;
-        }
-
-        .nav-btn:hover {
-            background: var(--text-light);
-            color: var(--bg-dark);
-            transform: scale(1.02);
-        }
-
-        /* Sections */
-        section {
-            position: relative;
-            z-index: 1;
-            padding: 100px 24px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding-top: 100px;
-        }
-
-        .hero h1 { margin-bottom: 24px; line-height: 1.15; }
-        .hero-line { display: block; transition: transform 0.1s ease-out; }
-        
-        .hero-subtext {
-            font-size: clamp(16px, 2.5vw, 22px);
-            color: var(--text-light);
-            margin-bottom: 48px;
+        .logo-badge {
+            display: inline-block;
+            background: var(--mint-dim);
+            border: 1px solid var(--border-accent);
+            color: var(--mint);
+            font-family: 'Space Mono', monospace;
+            font-size: 9px; letter-spacing: 0.1em;
+            padding: 2px 7px; border-radius: 4px;
+            margin-left: 6px; vertical-align: middle;
             font-weight: 400;
-            opacity: 0.9;
+        }
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+        .lang-switch {
+            display: flex; background: rgba(255,255,255,0.04);
+            padding: 3px; border-radius: 7px;
+            border: 1px solid var(--border);
+        }
+        .lang-btn {
+            padding: 4px 11px; border: none;
+            background: transparent; color: var(--text-muted);
+            font-size: 11px; font-weight: 600; cursor: pointer;
+            border-radius: 5px; transition: all 0.2s;
+            font-family: 'Space Mono', monospace;
+        }
+        .lang-btn.active {
+            background: rgba(53,242,154,0.12);
+            color: var(--mint);
+        }
+        .nav-btn {
+            padding: 8px 18px;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            text-decoration: none; border-radius: var(--radius-sm);
+            font-size: 13px; font-weight: 600;
+            transition: all 0.2s; cursor: pointer; background: transparent;
+        }
+        .nav-btn:hover {
+            border-color: var(--mint); color: var(--mint);
         }
 
-        .stats-container {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            margin-bottom: 60px;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 32px 24px;
-            border-radius: 20px;
-            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-            width: 288px; /* 320px의 90% */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 162px; /* 180px의 90% */
-        }
-
-        .stat-item:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: rgba(175, 169, 236, 0.4);
-            background: rgba(255, 255, 255, 0.06);
-        }
-
-        .stat-number {
-            font-family: 'DM Mono', monospace;
-            font-size: 32px; /* 폰트 크기 증가 */
-            font-weight: 600;
-            color: var(--text-light);
-            margin-bottom: 12px;
-        }
-
-        .stat-label { font-size: 14.4px; color: rgba(255, 255, 255, 0.6); letter-spacing: 0.05em; } /* 12px의 1.2배 */
-
-        .scroll-indicator { margin-top: 40px; animation: bounce 2s infinite; opacity: 0.5; }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-12px); }
-            60% { transform: translateY(-6px); }
-        }
-
-        /* How It Works Section */
-        .how-it-works {
-            background: rgba(255, 255, 255, 0.01);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .section-title { text-align: center; margin-bottom: 60px; }
-        .flows-container { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
-        .flow-title { font-size: 20px; margin-bottom: 40px; color: var(--text-light); }
-        .step { margin-bottom: 40px; display: flex; gap: 24px; transition: all 0.3s ease; }
-        .step-num {
-            flex-shrink: 0;
-            font-family: 'DM Mono', monospace;
-            font-size: 32px;
-            font-weight: 600;
-            color: rgba(175, 169, 236, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .step-content h4 { font-size: 18px; margin-bottom: 8px; font-family: 'Michroma', sans-serif; letter-spacing: -0.02em; }
-        .step-content p { font-size: 15px; color: rgba(255, 255, 255, 0.7); }
-
-        /* Value Proposition Cards */
-        .value-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        .value-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 48px;
-            border-radius: 20px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        .value-card:hover { transform: translateY(-8px); border-color: rgba(175, 169, 236, 0.2); }
-        .value-card h3 { font-size: 24px; margin-bottom: 28px; }
-        .value-list { list-style: none; }
-        .value-list li { margin-bottom: 16px; display: flex; align-items: flex-start; gap: 12px; font-size: 15px; color: rgba(255, 255, 255, 0.8); }
-        .value-list li::before { content: '✓'; flex-shrink: 0; color: var(--text-light); font-weight: 700; margin-top: 2px; }
-
-        /* Waitlist Section */
-        .waitlist-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 48px;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 520px;
-            margin: 0 auto;
-        }
-
-        .waitlist-title { text-align: center; margin-bottom: 40px; }
-        .toggle-group { display: flex; background: rgba(255, 255, 255, 0.05); padding: 4px; border-radius: 10px; margin-bottom: 32px; border: 1px solid rgba(255, 255, 255, 0.08); }
-        .toggle-btn {
-            flex: 1;
-            padding: 12px 16px;
-            border: none;
-            background: transparent;
-            color: rgba(255, 255, 255, 0.6);
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Pretendard', sans-serif;
-        }
-
-        .toggle-btn.active { background: rgba(175, 169, 236, 0.15); color: var(--text-light); }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-white); }
-        .form-group input {
-            width: 100%;
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            color: var(--text-white);
-            font-family: 'Pretendard', sans-serif;
-            font-size: 15px;
-            transition: all 0.2s ease;
-        }
-
-        .form-group input:focus { outline: none; border-color: rgba(175, 169, 236, 0.5); }
-        .error-msg { color: #FF6B6B; font-size: 12px; margin-top: 4px; display: none; }
-        .submit-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--text-light);
-            color: var(--bg-dark);
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-            margin-top: 8px;
-            font-family: 'Pretendard', sans-serif;
-        }
-
-        .success-state { display: none; text-align: center; padding: 40px 0; }
-
-        /* Calc Box */
-        .calc-box {
-            background: rgba(175, 169, 236, 0.07);
-            border: 1px solid rgba(175, 169, 236, 0.2);
-            border-radius: 10px;
-            padding: 14px 16px;
-            margin-top: 10px;
-            display: none;
-        }
-        .calc-box-label {
-            font-size: 11px;
-            color: rgba(175, 169, 236, 0.7);
-            font-family: 'DM Mono', monospace;
-            letter-spacing: 0.05em;
-            margin-bottom: 4px;
-        }
-        .calc-box-value {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-light);
-            font-family: 'DM Mono', monospace;
-        }
-        .calc-box-desc {
-            font-size: 11px;
-            color: rgba(255,255,255,0.4);
-            margin-top: 3px;
-        }
-        .form-group input[type="number"] {
-            -moz-appearance: textfield;
-        }
-        .form-group input[type="number"]::-webkit-outer-spin-button,
-        .form-group input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .input-with-unit {
-            position: relative;
-        }
-        .input-with-unit input {
-            padding-right: 44px;
-        }
-        .input-unit {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 13px;
-            color: rgba(255,255,255,0.4);
-            pointer-events: none;
-        }
-
-        /* Footer */
-        footer { padding: 60px 24px; border-top: 1px solid rgba(255, 255, 255, 0.05); text-align: center; }
-        .footer-logo { font-family: 'Michroma', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.02em; }
-        .footer-logo-pay { color: var(--text-light); }
-        .footer-text { font-size: 13px; color: rgba(255, 255, 255, 0.5); margin-bottom: 8px; }
-        .privacy-text { font-size: 12px; color: rgba(255, 255, 255, 0.4); }
-
-        /* Animations */
-        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        /* FADE IN */
+        .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
         .fade-in.visible { opacity: 1; transform: translateY(0); }
 
-        /* Language Display Logic */
-        [data-lang] { display: none; }
-        
-        /* Show KO content by default or when lang="ko" */
-        html:not([lang="en"]) [data-lang="ko"],
-        html[lang="ko"] [data-lang="ko"] { display: block; }
-        html:not([lang="en"]) span[data-lang="ko"],
-        html[lang="ko"] span[data-lang="ko"] { display: inline; }
-        html:not([lang="en"]) li[data-lang="ko"],
-        html[lang="ko"] li[data-lang="ko"] { display: flex; }
-        
-        /* Show EN content only when lang="en" */
-        html[lang="en"] [data-lang="en"] { display: block; }
-        html[lang="en"] span[data-lang="en"] { display: inline; }
-        html[lang="en"] li[data-lang="en"] { display: flex; }
-        
-        /* Hide KO when EN is active */
-        html[lang="en"] [data-lang="ko"] { display: none; }
-        html[lang="en"] span[data-lang="ko"] { display: none; }
-        html[lang="en"] li[data-lang="ko"] { display: none !important; }
-
-        /* Hide EN when KO is active — override high-specificity list rules */
-        html:not([lang="en"]) li[data-lang="en"] { display: none !important; }
-        html[lang="ko"] li[data-lang="en"] { display: none !important; }
-
-        @media (max-width: 768px) {
-            .flows-container, .value-cards { grid-template-columns: 1fr; }
-            .hero { min-height: auto; padding-top: 120px; padding-bottom: 60px; }
-            section { padding: 60px 24px; }
+        /* SECTION BASE */
+        section {
+            position: relative; z-index: 1;
+            max-width: 1200px; margin: 0 auto;
+            padding: 100px 24px;
+        }
+        .section-tag {
+            display: inline-flex; align-items: center; gap: 7px;
+            font-family: 'Space Mono', monospace; font-size: 10px;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--mint); background: var(--mint-glow);
+            border: 1px solid var(--border-accent);
+            padding: 5px 12px; border-radius: 100px; margin-bottom: 20px;
+        }
+        .section-tag .dot {
+            width: 5px; height: 5px; border-radius: 50%;
+            background: var(--mint); animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
-        /* ── How It Works Trigger Buttons ── */
-        .hiw-trigger-row {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 52px;
-            flex-wrap: wrap;
-        }
-
-        .hiw-trigger-btn {
-            display: inline-flex;
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
             align-items: center;
-            gap: 10px;
-            padding: 13px 26px;
-            background: var(--glass-bg);
-            border: 1px solid rgba(175,169,236,0.25);
-            border-radius: 12px;
-            color: var(--text-light);
+            padding-top: 100px;
+        }
+        .hero-left { order: 1; }
+        .hero-eyebrow {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: 'Space Mono', monospace; font-size: 10px;
+            letter-spacing: 0.14em; text-transform: uppercase;
+            color: var(--mint); background: var(--mint-glow);
+            border: 1px solid var(--border-accent);
+            padding: 5px 14px; border-radius: 100px; margin-bottom: 28px;
+        }
+        .hero-eyebrow .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--mint); animation: pulse 2s infinite; }
+        .hero-h1 {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: clamp(38px, 5.5vw, 68px);
+            line-height: 1.08;
+            letter-spacing: -0.03em;
+            margin-bottom: 20px;
+        }
+        html[lang="en"] .hero-h1 {
+            font-size: clamp(34px, 4.6vw, 56px);
+            line-height: 1.04;
+        }
+        .hero-h1 .accent { color: var(--mint); }
+        .hero-sub {
+            font-size: clamp(15px, 1.8vw, 18px);
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        .hero-desc {
             font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
+            color: var(--text-dim);
+            margin-bottom: 36px;
+            line-height: 1.7;
+            max-width: 440px;
+        }
+        .hero-cta {
+            display: flex; gap: 12px; flex-wrap: wrap;
+        }
+        .btn-mint {
+            padding: 13px 24px;
+            background: var(--mint); color: #07080D;
+            border: none; border-radius: var(--radius-sm);
+            font-size: 14px; font-weight: 700;
+            cursor: pointer; transition: all 0.25s cubic-bezier(0.23,1,0.32,1);
             font-family: 'Pretendard', sans-serif;
-            transition: all 0.3s cubic-bezier(0.23,1,0.32,1);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            white-space: nowrap;
+        }
+        .btn-mint:hover { background: #4fffa8; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(53,242,154,0.3); }
+        .btn-outline {
+            padding: 13px 24px;
+            background: transparent; color: var(--text);
+            border: 1px solid var(--border); border-radius: var(--radius-sm);
+            font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: all 0.25s ease;
+            font-family: 'Pretendard', sans-serif;
+            white-space: nowrap; text-decoration: none;
+            display: inline-flex; align-items: center;
+        }
+        .btn-outline:hover { border-color: var(--text-muted); background: rgba(255,255,255,0.04); }
+
+        /* Hero highlight pills */
+        .hero-pills {
+            display: flex; gap: 8px; flex-wrap: wrap;
+            margin-top: 28px;
+        }
+        .hero-pill {
+            display: flex; align-items: center; gap: 6px;
+            background: var(--bg-card); border: 1px solid var(--border);
+            padding: 6px 12px; border-radius: var(--radius-sm);
+            font-size: 12px; color: var(--text-muted);
+        }
+        .hero-pill svg { color: var(--mint); flex-shrink: 0; }
+
+        /* HERO MOCKUP */
+        .hero-right {
+            display: flex; flex-direction: column; gap: 12px;
+            order: 2;
+        }
+        .mockup-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .mockup-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(53,242,154,0.4), transparent);
+        }
+        .mockup-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .mockup-title-row {
+            display: flex; align-items: center; gap: 8px;
+        }
+        .mockup-icon {
+            width: 28px; height: 28px;
+            background: var(--mint-dim); border: 1px solid var(--border-accent);
+            border-radius: 7px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .mockup-icon svg { width: 14px; height: 14px; color: var(--mint); }
+        .mockup-label {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 13px; letter-spacing: 0;
+            font-weight: 600;
+            color: rgba(246,248,251,0.82);
+        }
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-family: 'Pretendard', sans-serif;
+            font-size: 12px; letter-spacing: 0;
+            font-weight: 700;
+            padding: 4px 10px; border-radius: 100px;
+        }
+        .status-pill.settling {
+            background: rgba(139,92,246,0.12);
+            border: 1px solid rgba(139,92,246,0.3);
+            color: #b08cf9;
+        }
+        .status-pill.settling .dot { width: 5px; height: 5px; border-radius: 50%; background: #b08cf9; animation: pulse 1.5s infinite; }
+        .status-pill.open {
+            background: rgba(53,242,154,0.1);
+            border: 1px solid rgba(53,242,154,0.25);
+            color: var(--mint);
+        }
+        .status-pill.open .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--mint); animation: pulse 1.5s infinite; }
+        .status-pill.pilot {
+            background: rgba(255,184,0,0.08);
+            border: 1px solid rgba(255,184,0,0.2);
+            color: #f5c842;
+        }
+        .mockup-stats {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 10px; margin-bottom: 14px;
+        }
+        .mstat {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 10px; padding: 14px;
+        }
+        .mstat-label {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 12px; letter-spacing: 0;
+            font-weight: 600;
+            color: rgba(246,248,251,0.6);
+            margin-bottom: 7px;
+        }
+        .mstat-val {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 20px; font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+        .mstat-val.mint { color: var(--mint); }
+        .mstat-val.purple { color: #b08cf9; }
+
+        /* Creator rows in mockup */
+        .creator-list { display: flex; flex-direction: column; gap: 8px; }
+        .creator-row {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 9px; padding: 11px 13px;
+        }
+        .creator-left { display: flex; align-items: center; gap: 8px; }
+        .creator-avatar {
+            width: 26px; height: 26px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 700; flex-shrink: 0;
+        }
+        .creator-handle {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 13px; color: rgba(246,248,251,0.92);
+            font-weight: 700;
+        }
+        .creator-views {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 12px; color: rgba(154,163,178,0.95);
+        }
+        .creator-payout {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 14px; font-weight: 800; color: var(--mint);
+            letter-spacing: -0.01em;
+        }
+        .mockup-progress {
+            margin-top: 12px;
+        }
+        .progress-label {
+            display: flex; justify-content: space-between;
+            font-family: 'Pretendard', sans-serif;
+            font-size: 12px; color: rgba(246,248,251,0.6);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .progress-bar {
+            height: 4px; background: rgba(255,255,255,0.06);
+            border-radius: 2px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; border-radius: 2px;
+            background: linear-gradient(90deg, var(--mint), #7ef5c0);
+            animation: progress-grow 3s ease-in-out infinite alternate;
+        }
+        @keyframes progress-grow {
+            from { width: 8%; }
+            to { width: 12%; }
         }
 
-        .hiw-trigger-btn:hover {
-            background: rgba(175,169,236,0.12);
-            border-color: rgba(175,169,236,0.5);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(83,74,183,0.2);
+        /* Small mockup 2 */
+        .mockup-mini {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 16px;
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+            animation: float 6s ease-in-out infinite 2s;
+        }
+        .mini-stat {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 9px; padding: 10px;
+            text-align: center;
+        }
+        .mini-val {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 16px; font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .mini-label {
+            font-size: 11px; color: rgba(246,248,251,0.6);
+            font-family: 'Pretendard', sans-serif;
+            font-weight: 600;
         }
 
-        .hiw-trigger-btn .btn-icon {
-            width: 20px;
-            height: 20px;
-            opacity: 0.8;
+        /* SECTION DIVIDER */
+        .sec-divider {
+            width: 100%; max-width: 1200px; margin: 0 auto;
+            border: none; border-top: 1px solid var(--border);
         }
 
-        /* ── Benefit Card ── */
-        .benefit-card {
-            background: rgba(175,169,236,0.07);
-            border: 1px solid rgba(175,169,236,0.22);
-            border-radius: 14px;
-            padding: 18px 20px;
-            margin-bottom: 28px;
-            display: none;
+        /* ── MARKETPLACE PREVIEW ── */
+        .marketplace-section { padding: 100px 24px; }
+        .marketplace-header { text-align: center; margin-bottom: 52px; }
+        .marketplace-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(28px, 4vw, 48px);
+            font-weight: 800; letter-spacing: -0.03em;
+            margin-bottom: 14px;
         }
-
-        .benefit-card.visible { display: block; }
-
-        .benefit-card-icon {
+        .marketplace-sub {
+            font-size: 15px; color: var(--text-muted);
+            max-width: 520px; margin: 0 auto;
+        }
+        .campaign-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+        .campaign-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 20px;
+            position: relative; overflow: hidden;
+            transition: all 0.28s cubic-bezier(0.23,1,0.32,1);
+            cursor: default;
+        }
+        .campaign-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(53,242,154,0.2);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(53,242,154,0.07);
+        }
+        .campaign-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(53,242,154,0.25), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .campaign-card:hover::before { opacity: 1; }
+        .campaign-card-top {
+            display: flex; align-items: flex-start;
+            justify-content: space-between; margin-bottom: 14px;
+        }
+        .campaign-category {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+        .campaign-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 14px; font-weight: 700;
+            line-height: 1.3; color: var(--text);
+        }
+        .campaign-desc {
+            font-size: 12px; color: var(--text-muted);
+            line-height: 1.55; margin: 10px 0 16px;
+        }
+        .campaign-footer {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+        .pool-amt {
+            font-family: 'Space Mono', monospace;
+            font-size: 13px; font-weight: 700; color: var(--mint);
+        }
+        .pool-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px; color: var(--text-dim);
+            text-transform: uppercase; letter-spacing: 0.06em;
+            display: block; margin-bottom: 2px;
+        }
+        .campaign-platforms {
+            display: flex; gap: 5px; margin-top: 12px;
+        }
+        .platform-badge {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px; letter-spacing: 0.04em;
+            padding: 3px 7px; border-radius: 4px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+        }
+        .campaign-empty {
+            grid-column: 1 / -1;
+            background: rgba(255,255,255,0.025);
+            border: 1px dashed rgba(255,255,255,0.16);
+            border-radius: var(--radius);
+            padding: 32px 24px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        .campaign-empty strong {
+            display: block;
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
             font-size: 18px;
             margin-bottom: 6px;
         }
-
-        .benefit-card-label {
-            font-size: 10px;
-            font-family: 'DM Mono', monospace;
-            color: var(--text-light);
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            opacity: 0.8;
+        .campaign-card.generated {
+            border-color: rgba(53,242,154,0.2);
         }
 
-        .benefit-card-text {
-            font-size: 14px;
-            color: rgba(255,255,255,0.9);
-            line-height: 1.5;
+        /* ── HOW IT WORKS ── */
+        .hiw-section {
+            background: rgba(255,255,255,0.01);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
         }
-
-        .benefit-highlight {
-            color: var(--text-light);
-            font-weight: 700;
+        .hiw-inner { max-width: 1200px; margin: 0 auto; padding: 100px 24px; }
+        .hiw-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(26px, 3.5vw, 42px);
+            font-weight: 800; letter-spacing: -0.03em;
+            text-align: center; margin-bottom: 56px;
         }
-
-        /* ── Modal Overlay ── */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 9000;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.35s ease;
+        .flows-container { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+        .flow-col-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px; letter-spacing: 0.14em;
+            text-transform: uppercase; color: var(--mint);
+            background: var(--mint-glow); border: 1px solid var(--border-accent);
+            display: inline-block; padding: 5px 12px; border-radius: 100px;
+            margin-bottom: 28px;
         }
-
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: all;
+        .step { display: flex; gap: 18px; margin-bottom: 32px; }
+        .step-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 22px; font-weight: 700;
+            color: rgba(53,242,154,0.2); flex-shrink: 0;
+            width: 36px; line-height: 1;
+            transition: color 0.2s;
         }
-
-        /* ── Modal Container ── */
-        .modal-container {
-            position: relative;
-            background: rgba(13,13,18,0.96);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 24px;
-            max-width: 860px;
-            width: 100%;
-            max-height: 92vh;
-            overflow-y: auto;
-            padding: 52px 52px 48px;
-            transform: translateY(28px) scale(0.97);
-            transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
-            scrollbar-width: thin;
-            scrollbar-color: rgba(175,169,236,0.2) transparent;
+        .step:hover .step-num { color: rgba(53,242,154,0.5); }
+        .step-content h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 15px; font-weight: 700;
+            margin-bottom: 5px; letter-spacing: -0.01em;
         }
+        .step-content p { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
 
-        .modal-container::-webkit-scrollbar { width: 5px; }
-        .modal-container::-webkit-scrollbar-track { background: transparent; }
-        .modal-container::-webkit-scrollbar-thumb { background: rgba(175,169,236,0.2); border-radius: 10px; }
-
-        .modal-overlay.open .modal-container {
-            transform: translateY(0) scale(1);
+        .hiw-trigger-row {
+            display: flex; gap: 12px; flex-wrap: wrap;
+            justify-content: center; margin-top: 48px;
         }
-
-        /* Aurora glow inside modal */
-        .modal-container::before {
-            content: '';
-            position: absolute;
-            top: -60px;
-            left: -60px;
-            width: 320px;
-            height: 320px;
-            background: radial-gradient(circle, rgba(83,74,183,0.15) 0%, transparent 70%);
-            pointer-events: none;
-            filter: blur(60px);
-        }
-
-        .modal-container::after {
-            content: '';
-            position: absolute;
-            bottom: -60px;
-            right: -60px;
-            width: 280px;
-            height: 280px;
-            background: radial-gradient(circle, rgba(29,158,117,0.1) 0%, transparent 70%);
-            pointer-events: none;
-            filter: blur(60px);
-        }
-
-        /* ── Close button ── */
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255,255,255,0.5);
-            transition: all 0.2s ease;
-            z-index: 10;
-        }
-
-        .modal-close:hover {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-        }
-
-        /* ── Modal Header ── */
-        .modal-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'DM Mono', monospace;
-            font-size: 11px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--text-light);
-            background: rgba(175,169,236,0.1);
-            border: 1px solid rgba(175,169,236,0.2);
-            border-radius: 100px;
-            padding: 5px 14px;
-            margin-bottom: 20px;
-        }
-
-        .modal-title {
-            font-family: 'Michroma', sans-serif;
-            font-size: clamp(22px, 4vw, 34px);
-            letter-spacing: -0.04em;
-            line-height: 1.1;
-            margin-bottom: 14px;
-            color: #fff;
-        }
-
-        .modal-hero {
-            font-size: clamp(15px, 2vw, 18px);
-            color: rgba(255,255,255,0.65);
-            margin-bottom: 44px;
-            max-width: 560px;
-            line-height: 1.6;
-        }
-
-        /* ── Steps ── */
-        .modal-steps-label {
-            font-family: 'DM Mono', monospace;
-            font-size: 10px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.35);
-            margin-bottom: 20px;
-        }
-
-        .modal-steps {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
-            margin-bottom: 44px;
-            position: relative;
-        }
-
-        /* Connecting line */
-        .modal-steps::before {
-            content: '';
-            position: absolute;
-            top: -28px;
-            left: 10%;
-            right: 10%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(175,169,236,0.3) 20%, rgba(175,169,236,0.3) 80%, transparent);
-            pointer-events: none;
-        }
-
-        .modal-step-card {
-            background: var(--glass-bg);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 16px;
-            padding: 20px 16px;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .modal-step-card:hover {
-            border-color: rgba(175,169,236,0.25);
-            background: rgba(255,255,255,0.05);
-            transform: translateY(-4px);
-        }
-
-        .modal-step-num {
-            font-family: 'DM Mono', monospace;
-            font-size: 11px;
-            color: var(--text-light);
-            opacity: 0.5;
-            margin-bottom: 14px;
-            display: block;
-        }
-
-        .modal-step-icon {
-            width: 28px;
-            height: 28px;
-            margin-bottom: 12px;
-            color: var(--text-light);
-            opacity: 0.7;
-        }
-
-        .modal-step-title {
-            font-family: 'Michroma', sans-serif;
-            font-size: 12px;
-            letter-spacing: -0.02em;
-            color: #fff;
-            margin-bottom: 8px;
-            line-height: 1.3;
-        }
-
-        .modal-step-text {
-            font-size: 12px;
-            color: rgba(255,255,255,0.5);
-            line-height: 1.5;
-        }
-
-        /* ── Benefits ── */
-        .modal-benefits-label {
-            font-family: 'DM Mono', monospace;
-            font-size: 10px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.35);
-            margin-bottom: 16px;
-        }
-
-        .modal-benefits-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-auto-rows: 1fr;
-            gap: 12px;
-            margin-bottom: 40px;
-            align-items: stretch;
-        }
-
-        .modal-benefit-item {
-            background: rgba(175,169,236,0.05);
-            border: 1px solid rgba(175,169,236,0.12);
-            border-radius: 12px;
-            padding: 16px 18px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            font-size: 14px;
-            color: rgba(255,255,255,0.8);
-            line-height: 1.5;
-            height: 100%;
-            box-sizing: border-box;
-        }
-
-        .modal-benefit-item .check {
-            flex-shrink: 0;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: rgba(175,169,236,0.15);
-            border: 1px solid rgba(175,169,236,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 1px;
-        }
-
-        .modal-benefit-item .check svg {
-            width: 10px;
-            height: 10px;
-            color: var(--text-light);
-        }
-
-        /* Bonus benefit item */
-        .modal-benefit-item.bonus {
-            background: rgba(175,169,236,0.1);
-            border-color: rgba(175,169,236,0.3);
-        }
-
-        .modal-benefit-item.bonus .check {
-            background: rgba(175,169,236,0.25);
-            border-color: rgba(175,169,236,0.5);
-        }
-
-        .modal-benefit-item .bonus-text {
-            color: var(--text-light);
-            font-weight: 600;
-        }
-
-        /* ── Modal CTA ── */
-        .modal-cta {
-            width: 100%;
-            padding: 16px;
-            background: var(--text-light);
-            color: var(--bg-dark);
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
+        .hiw-trigger-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 11px 20px;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); color: var(--text-muted);
+            font-size: 13px; font-weight: 600; cursor: pointer;
             font-family: 'Pretendard', sans-serif;
-            transition: all 0.3s cubic-bezier(0.23,1,0.32,1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            transition: all 0.2s; text-decoration: none;
+        }
+        .hiw-trigger-btn:hover {
+            border-color: var(--mint); color: var(--mint);
+            background: var(--mint-glow);
+        }
+        .btn-icon { width: 16px; height: 16px; }
+
+        /* ── VALUE SECTION ── */
+        .value-section { padding: 100px 24px; }
+        .value-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .value-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 36px;
+            position: relative; overflow: hidden;
+            transition: all 0.28s cubic-bezier(0.23,1,0.32,1);
+        }
+        .value-card:hover { transform: translateY(-4px); border-color: rgba(53,242,154,0.15); }
+        .value-card-badge {
+            display: inline-block;
+            font-family: 'Space Mono', monospace;
+            font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+            padding: 4px 10px; border-radius: 4px; margin-bottom: 18px;
+        }
+        .badge-creator { background: var(--purple-dim); color: #b08cf9; border: 1px solid rgba(139,92,246,0.25); }
+        .badge-advertiser { background: var(--mint-glow); color: var(--mint); border: 1px solid var(--border-accent); }
+        .value-card h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 20px; font-weight: 800; letter-spacing: -0.02em;
+            margin-bottom: 20px;
+        }
+        .value-list { list-style: none; }
+        .value-list li {
+            display: flex; align-items: flex-start; gap: 10px;
+            font-size: 14px; color: rgba(246,248,251,0.8);
+            margin-bottom: 12px; line-height: 1.55;
+        }
+        .value-list li::before {
+            content: '';
+            display: block; flex-shrink: 0;
+            width: 16px; height: 16px; border-radius: 50%;
+            margin-top: 2px;
+        }
+        .value-card:first-child .value-list li::before {
+            background: rgba(139,92,246,0.15);
+            border: 1px solid rgba(139,92,246,0.3);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10' fill='none' stroke='%238B5CF6' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M2 5l2.5 2.5L8 3'/%3E%3C/svg%3E");
+            background-size: 10px; background-position: center; background-repeat: no-repeat;
+        }
+        .value-card:last-child .value-list li::before {
+            background: rgba(53,242,154,0.1);
+            border: 1px solid rgba(53,242,154,0.25);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10' fill='none' stroke='%2335F29A' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M2 5l2.5 2.5L8 3'/%3E%3C/svg%3E");
+            background-size: 10px; background-position: center; background-repeat: no-repeat;
         }
 
-        .modal-cta:hover {
-            background: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(175,169,236,0.35);
+        /* ── WAITLIST ── */
+        .waitlist-section { padding: 100px 24px; }
+        .waitlist-inner { max-width: 560px; margin: 0 auto; }
+        .waitlist-header { text-align: center; margin-bottom: 36px; }
+        .waitlist-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(26px, 4vw, 40px);
+            font-weight: 800; letter-spacing: -0.03em;
+            margin-bottom: 12px;
+        }
+        .waitlist-sub { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
+        .waitlist-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 36px;
+        }
+        .toggle-group {
+            display: flex; background: rgba(255,255,255,0.04);
+            padding: 4px; border-radius: var(--radius-sm);
+            margin-bottom: 28px; border: 1px solid var(--border);
+        }
+        .toggle-btn {
+            flex: 1; padding: 10px 14px; border: none;
+            background: transparent; color: var(--text-muted);
+            border-radius: 7px; font-weight: 600; font-size: 13px;
+            cursor: pointer; transition: all 0.25s;
+            font-family: 'Pretendard', sans-serif;
+        }
+        .toggle-btn.active {
+            background: rgba(53,242,154,0.1);
+            color: var(--mint); border: 1px solid rgba(53,242,154,0.2);
         }
 
-        /* Mobile modal */
-        @media (max-width: 768px) {
-            .modal-container {
-                padding: 44px 24px 36px;
-                border-radius: 20px;
-                max-height: 95vh;
-            }
+        /* Benefit card */
+        .benefit-card {
+            background: linear-gradient(135deg, rgba(53,242,154,0.05), rgba(139,92,246,0.05));
+            border: 1px solid rgba(53,242,154,0.15);
+            border-radius: var(--radius-sm); padding: 14px 16px;
+            margin-bottom: 20px;
+        }
+        .benefit-card-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--mint); margin-bottom: 6px;
+        }
+        .benefit-card-text { font-size: 13px; color: rgba(246,248,251,0.75); }
+        .benefit-highlight { color: var(--mint); font-weight: 700; }
 
-            .modal-steps {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block; font-size: 12px; font-weight: 600;
+            margin-bottom: 7px; color: var(--text-muted);
+            font-family: 'Space Mono', monospace; letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .form-group input {
+            width: 100%; padding: 12px 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border); border-radius: var(--radius-sm);
+            color: var(--text); font-family: 'Pretendard', sans-serif;
+            font-size: 14px; transition: all 0.2s;
+        }
+        .form-group input:focus { outline: none; border-color: rgba(53,242,154,0.4); background: rgba(53,242,154,0.03); }
+        .form-group input::placeholder { color: var(--text-dim); }
+        .error-msg { color: #FF6B6B; font-size: 11px; margin-top: 4px; display: none; }
 
-            .modal-steps::before { display: none; }
+        .input-with-unit { position: relative; }
+        .input-with-unit input { padding-right: 44px; }
+        .input-unit {
+            position: absolute; right: 12px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px; color: var(--text-muted);
+            pointer-events: none; font-family: 'Space Mono', monospace;
+        }
+        .form-group input[type="number"] { -moz-appearance: textfield; }
+        .form-group input[type="number"]::-webkit-outer-spin-button,
+        .form-group input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-            .modal-step-card {
-                display: grid;
-                grid-template-columns: auto 1fr;
-                grid-template-rows: auto auto;
-                column-gap: 14px;
-                padding: 16px;
-                align-items: start;
-            }
+        .calc-box {
+            background: rgba(53,242,154,0.04);
+            border: 1px solid rgba(53,242,154,0.18);
+            border-radius: var(--radius-sm); padding: 12px 14px;
+            margin-top: 8px; display: none;
+        }
+        .calc-box-label {
+            font-size: 10px; color: rgba(53,242,154,0.6);
+            font-family: 'Space Mono', monospace; letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+        .calc-box-value {
+            font-size: 18px; font-weight: 700; color: var(--mint);
+            font-family: 'Space Mono', monospace;
+        }
+        .calc-box-desc { font-size: 10px; color: var(--text-dim); margin-top: 3px; }
 
-            .modal-step-num {
-                grid-column: 1;
-                grid-row: 1;
-                margin-bottom: 0;
-                align-self: center;
-                font-size: 12px;
-            }
+        .submit-btn {
+            width: 100%; padding: 14px;
+            background: var(--mint); color: #07080D;
+            border: none; border-radius: var(--radius-sm);
+            font-size: 15px; font-weight: 700; cursor: pointer;
+            transition: all 0.28s cubic-bezier(0.23,1,0.32,1);
+            margin-top: 8px; font-family: 'Pretendard', sans-serif;
+        }
+        .submit-btn:hover { background: #4fffa8; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(53,242,154,0.3); }
 
-            .modal-step-icon {
-                display: none;
-            }
+        .success-state { display: none; text-align: center; padding: 40px 0; }
+        .success-state h3 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 10px; color: var(--mint); }
+        .success-state p { font-size: 14px; color: var(--text-muted); }
 
-            .modal-step-title {
-                grid-column: 2;
-                grid-row: 1;
-                font-size: 13px;
-                margin-bottom: 4px;
-            }
+        /* FOOTER */
+        footer {
+            position: relative; z-index: 2;
+            text-align: center; padding: 40px 24px;
+            border-top: 1px solid var(--border);
+        }
+        .footer-logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px; font-weight: 800;
+            margin-bottom: 12px; letter-spacing: -0.02em;
+        }
+        .footer-logo-pay { color: var(--mint); }
+        .footer-text { font-size: 13px; color: var(--text-dim); margin-bottom: 6px; }
+        .privacy-text { font-size: 11px; color: rgba(154,163,178,0.5); margin-top: 8px; }
 
-            .modal-step-text {
-                grid-column: 2;
-                grid-row: 2;
-                font-size: 12px;
-            }
+        /* MODALS */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(7,8,13,0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: flex; align-items: center; justify-content: center;
+            padding: 24px;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        .modal-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 48px;
+            max-width: 800px; width: 100%;
+            max-height: 90vh; overflow-y: auto;
+            position: relative;
+            transform: translateY(20px); transition: transform 0.3s ease;
+        }
+        .modal-overlay.open .modal-container { transform: translateY(0); }
+        .modal-close {
+            position: absolute; top: 18px; right: 18px;
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border); border-radius: 8px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted); transition: all 0.2s; z-index: 10;
+        }
+        .modal-close:hover { background: rgba(255,255,255,0.09); color: var(--text); }
+        .modal-tag {
+            display: inline-flex; align-items: center; gap: 7px;
+            font-family: 'Space Mono', monospace; font-size: 10px;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--mint); background: var(--mint-glow);
+            border: 1px solid var(--border-accent);
+            padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
+        }
+        .modal-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(22px, 3.5vw, 34px);
+            font-weight: 800; letter-spacing: -0.03em;
+            line-height: 1.1; margin-bottom: 14px; color: var(--text);
+        }
+        .modal-hero {
+            font-size: clamp(14px, 1.8vw, 16px);
+            color: var(--text-muted); margin-bottom: 40px;
+            max-width: 560px; line-height: 1.65;
+        }
+        .modal-steps-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--text-dim); margin-bottom: 16px;
+        }
+        .modal-steps {
+            display: grid; grid-template-columns: repeat(5, 1fr);
+            gap: 10px; margin-bottom: 40px;
+        }
+        .modal-step-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 12px; padding: 16px 14px;
+            transition: all 0.25s ease;
+        }
+        .modal-step-card:hover { border-color: rgba(53,242,154,0.2); background: rgba(53,242,154,0.03); transform: translateY(-3px); }
+        .modal-step-num {
+            font-family: 'Space Mono', monospace; font-size: 10px;
+            color: var(--mint); opacity: 0.5; margin-bottom: 12px; display: block;
+        }
+        .modal-step-icon { width: 24px; height: 24px; margin-bottom: 10px; color: var(--text-muted); }
+        .modal-step-title {
+            font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+            letter-spacing: -0.01em; color: var(--text); margin-bottom: 6px; line-height: 1.3;
+        }
+        .modal-step-text { font-size: 11px; color: var(--text-dim); line-height: 1.5; }
+        .modal-benefits-label {
+            font-family: 'Space Mono', monospace; font-size: 9px;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--text-dim); margin-bottom: 14px;
+        }
+        .modal-benefits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 36px; }
+        .modal-benefit-item {
+            background: rgba(53,242,154,0.03);
+            border: 1px solid rgba(53,242,154,0.1);
+            border-radius: 10px; padding: 14px 16px;
+            display: flex; align-items: flex-start; gap: 10px;
+            font-size: 13px; color: rgba(246,248,251,0.8); line-height: 1.5;
+        }
+        .modal-benefit-item.bonus { background: rgba(53,242,154,0.07); border-color: rgba(53,242,154,0.2); }
+        .modal-benefit-item .check {
+            flex-shrink: 0; width: 16px; height: 16px; border-radius: 50%;
+            background: rgba(53,242,154,0.1); border: 1px solid rgba(53,242,154,0.3);
+            display: flex; align-items: center; justify-content: center; margin-top: 1px;
+        }
+        .modal-benefit-item .check svg { width: 8px; height: 8px; color: var(--mint); }
+        .bonus-text { color: var(--mint); font-weight: 600; }
+        .modal-cta {
+            width: 100%; padding: 15px;
+            background: var(--mint); color: #07080D;
+            border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
+            cursor: pointer; font-family: 'Pretendard', sans-serif;
+            transition: all 0.25s cubic-bezier(0.23,1,0.32,1);
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .modal-cta:hover { background: #4fffa8; transform: translateY(-2px); box-shadow: 0 10px 28px rgba(53,242,154,0.3); }
 
-            .modal-benefits-grid {
-                grid-template-columns: 1fr;
-            }
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; min-height: auto; padding-bottom: 60px; }
+            .hero-left { order: 1; }
+            .hero-right { order: 2; }
+            .campaign-grid { grid-template-columns: 1fr 1fr; }
+            .flows-container { grid-template-columns: 1fr; gap: 40px; }
+            .value-cards { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .campaign-grid { grid-template-columns: 1fr; }
+            .modal-container { padding: 36px 22px; }
+            .modal-steps { grid-template-columns: 1fr; }
+            .modal-benefits-grid { grid-template-columns: 1fr; }
+            .hero-cta { flex-direction: column; }
+            .btn-mint, .btn-outline { text-align: center; justify-content: center; }
+            .mockup-stats { grid-template-columns: 1fr 1fr; }
+            .mockup-mini { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <div class="aurora-bg">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-    </div>
+<div class="aurora-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+</div>
 
-    <nav>
-        <div class="nav-content">
-            <a href="#" class="logo">View<span class="logo-pay">Pay</span></a>
-            <div class="nav-right">
-                <div class="lang-switch">
-                    <button class="lang-btn active" id="btn-ko" onclick="setLanguage('ko')">KR</button>
-                    <button class="lang-btn" id="btn-en" onclick="setLanguage('en')">EN</button>
+<nav>
+    <div class="nav-content">
+        <a href="#" class="logo">ViewPay<span class="logo-badge">BETA</span></a>
+        <div class="nav-right">
+            <div class="lang-switch">
+                <button class="lang-btn active" id="btn-ko" onclick="setLanguage('ko')">KR</button>
+                <button class="lang-btn" id="btn-en" onclick="setLanguage('en')">EN</button>
+            </div>
+            <a href="#waitlist" class="nav-btn" data-lang="ko">대기자 등록</a>
+            <a href="#waitlist" class="nav-btn" data-lang="en">Join Waitlist</a>
+        </div>
+    </div>
+</nav>
+
+<main>
+    <!-- ── HERO ── -->
+    <section class="hero fade-in">
+        <div class="hero-left">
+            <div class="hero-eyebrow">
+                <span class="dot"></span>
+                <span data-lang="ko">숏폼 캠페인 마켓플레이스</span>
+                <span data-lang="en">Short-Form Campaign Marketplace</span>
+            </div>
+            <h1 class="hero-h1">
+                <span data-lang="ko">조회수를 수익으로,<br><span class="accent">캠페인을 성과로.</span></span>
+                <span data-lang="en">Turn Views into Revenue.<br><span class="accent">Turn Campaigns into Performance.</span></span>
+            </h1>
+            <p class="hero-sub">
+                <span data-lang="ko">브랜드는 예산을 걸고, 크리에이터는 숏폼으로 결과를 만듭니다.</span>
+                <span data-lang="en">Brands set the budget. Creators prove it with short-form content.</span>
+            </p>
+            <p class="hero-desc">
+                <span data-lang="ko">ViewPay는 검증된 조회수에 따라 캠페인 예산 한도 내에서 보상을 정산하는 숏폼 캠페인 플랫폼입니다.</span>
+                <span data-lang="en">ViewPay settles creator rewards within each campaign budget based on verified view performance.</span>
+            </p>
+            <div class="hero-cta">
+                <button class="btn-mint" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'}); setWaitlistType('advertiser');">
+                    <span data-lang="ko">캠페인 시작하기</span>
+                    <span data-lang="en">Start a Campaign</span>
+                </button>
+                <button class="btn-outline" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'}); setWaitlistType('creator');">
+                    <span data-lang="ko">크리에이터로 참여하기</span>
+                    <span data-lang="en">Join as Creator</span>
+                </button>
+            </div>
+            <div class="hero-pills">
+                <div class="hero-pill">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 6l3 3 7-7"/></svg>
+                    <span data-lang="ko">최소 50만 원부터 캠페인 시작</span>
+                    <span data-lang="en">Campaigns from ₩500K</span>
                 </div>
-                <a href="#waitlist" class="nav-btn" data-lang="ko">대기자 등록</a>
-                <a href="#waitlist" class="nav-btn" data-lang="en">Join Waitlist</a>
+                <div class="hero-pill">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 6l3 3 7-7"/></svg>
+                    <span data-lang="ko">팔로워 수와 관계없이 참여 가능</span>
+                    <span data-lang="en">Join regardless of follower count</span>
+                </div>
+                <div class="hero-pill">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 6l3 3 7-7"/></svg>
+                    <span data-lang="ko">검증된 조회수 기반 정산</span>
+                    <span data-lang="en">Rewards based on verified views</span>
+                </div>
             </div>
         </div>
-    </nav>
 
-    <main>
-        <!-- Hero Section -->
-        <section class="hero fade-in">
-            <h1>
-                <span class="hero-line" data-lang="ko">조회수가</span>
-                <span class="hero-line" data-lang="ko">곧 수익입니다</span>
-                <span class="hero-line" data-lang="en">Views become</span>
-                <span class="hero-line" data-lang="en">Revenue</span>
-            </h1>
-            <p class="hero-subtext">
-                <span data-lang="ko">모든 조회수를 수익으로, 모든 예산을 성과로.</span>
-                <span data-lang="en">Monetize every view, optimize every spend.</span>
+        <!-- HERO MOCKUP RIGHT -->
+        <div class="hero-right">
+            <!-- Main campaign pool card -->
+            <div class="mockup-card">
+                <div class="mockup-header">
+                    <div class="mockup-title-row">
+                        <div class="mockup-icon">
+                            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 1v2M7 11v2M1 7h2M11 7h2"/><circle cx="7" cy="7" r="3"/></svg>
+                        </div>
+                        <span class="mockup-label" data-lang="ko">정산 화면 예시</span>
+                        <span class="mockup-label" data-lang="en">Payout Preview</span>
+                    </div>
+                    <span class="status-pill settling">
+                        <span class="dot"></span>
+                        <span data-lang="ko">예시</span>
+                        <span data-lang="en">Sample</span>
+                    </span>
+                </div>
+                <div class="mockup-stats">
+                    <div class="mstat">
+                        <div class="mstat-label" data-lang="ko">예시 예산</div>
+                        <div class="mstat-label" data-lang="en">Sample Budget</div>
+                        <div class="mstat-val">₩1,500,000</div>
+                    </div>
+                    <div class="mstat">
+                        <div class="mstat-label" data-lang="ko">예시 조회수</div>
+                        <div class="mstat-label" data-lang="en">Sample Views</div>
+                        <div class="mstat-val mint">150,000</div>
+                    </div>
+                    <div class="mstat">
+                        <div class="mstat-label" data-lang="ko">예상 정산</div>
+                        <div class="mstat-label" data-lang="en">Est. Settlement</div>
+                        <div class="mstat-val purple">₩150,000</div>
+                    </div>
+                    <div class="mstat">
+                        <div class="mstat-label" data-lang="ko">제출 숏폼 예시</div>
+                        <div class="mstat-label" data-lang="en">Sample Shorts</div>
+                        <div class="mstat-val">12</div>
+                    </div>
+                </div>
+                <div class="mockup-label" style="margin-bottom:10px; font-size:12px; color: rgba(246,248,251,0.7);">
+                    <span data-lang="ko">크리에이터 예시</span>
+                    <span data-lang="en">Sample Creators</span>
+                </div>
+                <div class="creator-list">
+                    <div class="creator-row">
+                        <div class="creator-left">
+                            <div class="creator-avatar" style="background:rgba(53,242,154,0.12); color:var(--mint);">A</div>
+                            <div>
+                                <div class="creator-handle">
+                                    <span data-lang="ko">크리에이터 예시 A</span>
+                                    <span data-lang="en">Sample Creator A</span>
+                                </div>
+                                <div class="creator-views">
+                                    <span data-lang="ko">60,000 예시 조회수</span>
+                                    <span data-lang="en">60,000 sample views</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="creator-payout">₩60,000</div>
+                    </div>
+                    <div class="creator-row">
+                        <div class="creator-left">
+                            <div class="creator-avatar" style="background:rgba(139,92,246,0.12); color:#b08cf9;">B</div>
+                            <div>
+                                <div class="creator-handle">
+                                    <span data-lang="ko">크리에이터 예시 B</span>
+                                    <span data-lang="en">Sample Creator B</span>
+                                </div>
+                                <div class="creator-views">
+                                    <span data-lang="ko">45,000 예시 조회수</span>
+                                    <span data-lang="en">45,000 sample views</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="creator-payout">₩45,000</div>
+                    </div>
+                    <div class="creator-row">
+                        <div class="creator-left">
+                            <div class="creator-avatar" style="background:rgba(255,184,0,0.1); color:#f5c842;">C</div>
+                            <div>
+                                <div class="creator-handle">
+                                    <span data-lang="ko">크리에이터 예시 C</span>
+                                    <span data-lang="en">Sample Creator C</span>
+                                </div>
+                                <div class="creator-views">
+                                    <span data-lang="ko">45,000 예시 조회수</span>
+                                    <span data-lang="en">45,000 sample views</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="creator-payout">₩45,000</div>
+                    </div>
+                </div>
+                <div class="mockup-progress">
+                    <div class="progress-label">
+                        <span data-lang="ko">예산 집행 % 예시</span>
+                        <span data-lang="en">Used Budget % example</span>
+                        <span style="color:var(--mint);">10%</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill"></div></div>
+                </div>
+            </div>
+            <!-- Mini stat row -->
+            <div class="mockup-mini">
+                <div class="mini-stat">
+                    <div class="mini-val" style="color:var(--mint);">₩1,000</div>
+                    <div class="mini-label">
+                        <span data-lang="ko">1,000회당</span>
+                        <span data-lang="en">per 1K views</span>
+                    </div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-val">100%</div>
+                    <div class="mini-label">
+                        <span data-lang="ko">성과 기반</span>
+                        <span data-lang="en">performance-based</span>
+                    </div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-val" style="color:#b08cf9;">₩500,000</div>
+                    <div class="mini-label">
+                        <span data-lang="ko">최소 예산</span>
+                        <span data-lang="en">minimum budget</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="sec-divider">
+
+    <!-- ── CAMPAIGN MARKETPLACE PREVIEW ── -->
+    <section class="marketplace-section fade-in">
+        <div class="marketplace-header">
+            <div class="section-tag"><span class="dot"></span>
+                <span data-lang="ko">캠페인 마켓플레이스 프리뷰</span>
+                <span data-lang="en">Campaign Marketplace Preview</span>
+            </div>
+            <h2 class="marketplace-title">
+                <span data-lang="ko">곧 열릴 캠페인 마켓플레이스</span>
+                <span data-lang="en">Campaign Marketplace Preview</span>
+            </h2>
+            <p class="marketplace-sub">
+                <span data-lang="ko">광고주 대기자 등록이 들어오면, 해당 브랜드와 예산이 이곳에 표시됩니다.</span>
+                <span data-lang="en">When an advertiser joins the waitlist, the brand and budget appear here.</span>
             </p>
-            
-            <div class="stats-container">
-                <div class="stat-item">
-                    <div class="stat-number dm-mono"><span class="counter" data-target="1000">0</span><span data-lang="ko">회</span><span data-lang="en"> Views</span></div>
-                    <div class="stat-label" data-lang="ko">1,000회 조회당 ₩1,000~</div>
-                    <div class="stat-label" data-lang="en">₩1,000+ PER 1K VIEWS</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number dm-mono">₩<span class="counter" data-target="100000">0</span></div>
-                    <div class="stat-label" data-lang="ko">최소 캠페인 예산</div>
-                    <div class="stat-label" data-lang="en">MINIMUM BUDGET</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number dm-mono">100%</div>
-                    <div class="stat-label" data-lang="ko">성과 기반 결제</div>
-                    <div class="stat-label" data-lang="en">PERFORMANCE BASED</div>
+        </div>
+        <div class="campaign-grid" id="campaignGrid">
+            <div class="campaign-empty" id="campaignEmpty">
+                <strong data-lang="ko">아직 등록된 광고주 캠페인이 없습니다.</strong>
+                <strong data-lang="en">No advertiser campaigns yet.</strong>
+                <span data-lang="ko">광고주로 대기자 등록하면 상호명과 예산이 이곳에 표시됩니다.</span>
+                <span data-lang="en">Join as an advertiser and your brand name and budget will appear here.</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── HOW IT WORKS ── -->
+    <div class="hiw-section">
+        <div class="hiw-inner fade-in">
+            <div style="text-align:center; margin-bottom: 8px;">
+                <div class="section-tag" style="display:inline-flex;">
+                    <span data-lang="ko">이용 방법</span>
+                    <span data-lang="en">How It Works</span>
                 </div>
             </div>
-
-            <div class="scroll-indicator">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
-                </svg>
-            </div>
-        </section>
-
-        <!-- How It Works -->
-        <section class="how-it-works fade-in">
-            <h2 class="section-title" data-lang="ko">이용 방법</h2>
-            <h2 class="section-title" data-lang="en">How it works</h2>
-            
+            <h2 class="hiw-title">
+                <span data-lang="ko">캠페인이 흘러가는 방식</span>
+                <span data-lang="en">How the Campaign Flows</span>
+            </h2>
             <div class="flows-container">
                 <div>
-                    <h3 class="flow-title" data-lang="ko">광고주</h3>
-                    <h3 class="flow-title" data-lang="en">Advertisers</h3>
+                    <div class="flow-col-title" data-lang="ko">브랜드 / 광고주</div>
+                    <div class="flow-col-title" data-lang="en">Brands / Advertisers</div>
                     <div class="step">
                         <div class="step-num">01</div>
                         <div class="step-content">
-                            <h4 data-lang="ko">캠페인 생성</h4>
-                            <h4 data-lang="en">Create Campaign</h4>
-                            <p data-lang="ko">마케팅 목표와 예산을 설정하고 캠페인을 등록합니다.</p>
-                            <p data-lang="en">Set your marketing goals and budget to launch a campaign.</p>
+                            <h4 data-lang="ko">캠페인 예산 설정</h4>
+                            <h4 data-lang="en">Set your campaign budget</h4>
+                            <p data-lang="ko">최소 50만 원부터 예산과 콘텐츠 가이드를 설정합니다.</p>
+                            <p data-lang="en">Start from ₩500K and define your budget, content guide, and campaign rules.</p>
                         </div>
                     </div>
                     <div class="step">
                         <div class="step-num">02</div>
                         <div class="step-content">
-                            <h4 data-lang="ko">크리에이터 영상 업로드</h4>
-                            <h4 data-lang="en">Creator Uploads</h4>
-                            <p data-lang="ko">수많은 크리에이터들이 제품/서비스의 숏폼 영상을 제작하여 공유합니다.</p>
-                            <p data-lang="en">Creators produce and share short-form videos for your brand.</p>
+                            <h4 data-lang="ko">크리에이터가 숏폼 제작</h4>
+                            <h4 data-lang="en">Creators make short-form content</h4>
+                            <p data-lang="ko">여러 크리에이터가 브랜드에 맞는 숏폼을 제작하고 업로드합니다.</p>
+                            <p data-lang="en">Creators produce and upload short-form videos for your brand.</p>
                         </div>
                     </div>
                     <div class="step">
                         <div class="step-num">03</div>
                         <div class="step-content">
-                            <h4 data-lang="ko">조회수만큼 자동 정산</h4>
-                            <h4 data-lang="en">Auto Settlement</h4>
-                            <p data-lang="ko">실제로 발생한 조회수 성과에 대해서만 비용이 차감됩니다.</p>
-                            <p data-lang="en">Pay only for the actual views generated by the creators.</p>
+                            <h4 data-lang="ko">검증된 조회수 기반 정산</h4>
+                            <h4 data-lang="en">Settle based on verified views</h4>
+                            <p data-lang="ko">검증된 조회수에 따라 예산 한도 내에서 보상이 정산됩니다.</p>
+                            <p data-lang="en">Rewards are settled within your budget based on verified view performance.</p>
                         </div>
                     </div>
                 </div>
-
                 <div>
-                    <h3 class="flow-title" data-lang="ko">크리에이터</h3>
-                    <h3 class="flow-title" data-lang="en">Creators</h3>
+                    <div class="flow-col-title" style="background:rgba(139,92,246,0.1); border-color:rgba(139,92,246,0.25); color:#b08cf9;" data-lang="ko">크리에이터</div>
+                    <div class="flow-col-title" style="background:rgba(139,92,246,0.1); border-color:rgba(139,92,246,0.25); color:#b08cf9;" data-lang="en">Creators</div>
                     <div class="step">
-                        <div class="step-num">01</div>
+                        <div class="step-num" style="color:rgba(139,92,246,0.25);">01</div>
                         <div class="step-content">
                             <h4 data-lang="ko">캠페인 선택</h4>
-                            <h4 data-lang="en">Select Campaign</h4>
-                            <p data-lang="ko">자신의 채널 성격에 맞는 광고 캠페인을 자유롭게 선택합니다.</p>
-                            <p data-lang="en">Choose campaigns that match your content style and audience.</p>
+                            <h4 data-lang="en">Choose a campaign</h4>
+                            <p data-lang="ko">내 콘텐츠 스타일에 맞는 브랜드 캠페인을 선택합니다.</p>
+                            <p data-lang="en">Pick a brand campaign that fits your content style.</p>
                         </div>
                     </div>
                     <div class="step">
-                        <div class="step-num">02</div>
+                        <div class="step-num" style="color:rgba(139,92,246,0.25);">02</div>
                         <div class="step-content">
-                            <h4 data-lang="ko">숏폼 영상 제작 후 업로드</h4>
-                            <h4 data-lang="en">Create & Upload</h4>
-                            <p data-lang="ko">영상을 제작하여 틱톡, 인스타그램, 유튜브에 업로드합니다.</p>
-                            <p data-lang="en">Create short-form videos and post them on TikTok, IG, or Shorts.</p>
+                            <h4 data-lang="ko">숏폼 업로드</h4>
+                            <h4 data-lang="en">Upload short-form content</h4>
+                            <p data-lang="ko">TikTok, YouTube Shorts, Instagram Reels에 콘텐츠를 업로드합니다.</p>
+                            <p data-lang="en">Post your video on TikTok, YouTube Shorts, or Instagram Reels.</p>
                         </div>
                     </div>
                     <div class="step">
-                        <div class="step-num">03</div>
+                        <div class="step-num" style="color:rgba(139,92,246,0.25);">03</div>
                         <div class="step-content">
-                            <h4 data-lang="ko">조회수 수익 수령</h4>
-                            <h4 data-lang="en">Earn Revenue</h4>
-                            <p data-lang="ko">영상의 조회수 성과에 따라 투명하게 정산된 수익을 받습니다.</p>
-                            <p data-lang="en">Get paid transparently based on the views you generate.</p>
+                            <h4 data-lang="ko">조회수로 보상 받기</h4>
+                            <h4 data-lang="en">Earn from views</h4>
+                            <p data-lang="ko">팔로워 수가 아니라, 검증된 조회 성과를 기준으로 보상받습니다.</p>
+                            <p data-lang="en">Get rewarded for verified view performance, not follower count.</p>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- How It Works Trigger Buttons -->
             <div class="hiw-trigger-row">
                 <button class="hiw-trigger-btn" onclick="openModal('creator')">
-                    <svg class="btn-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="10" cy="7" r="3.5"/>
-                        <path d="M3 17c0-3.3 3.1-6 7-6s7 2.7 7 6"/>
-                    </svg>
+                    <svg class="btn-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="7" r="3.5"/><path d="M3 17c0-3.3 3.1-6 7-6s7 2.7 7 6"/></svg>
                     <span data-lang="ko">크리에이터 자세히 보기</span>
                     <span data-lang="en">Creator Details</span>
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M7 2l5 5-5 5"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
                 </button>
                 <button class="hiw-trigger-btn" onclick="openModal('advertiser')">
-                    <svg class="btn-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="5" width="16" height="12" rx="2"/>
-                        <path d="M6 5V4a4 4 0 018 0v1"/>
-                        <path d="M10 11v2"/>
-                    </svg>
+                    <svg class="btn-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="16" height="12" rx="2"/><path d="M6 5V4a4 4 0 018 0v1"/><path d="M10 11v2"/></svg>
                     <span data-lang="ko">광고주 자세히 보기</span>
                     <span data-lang="en">Advertiser Details</span>
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M7 2l5 5-5 5"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
                 </button>
             </div>
-        </section>
+        </div>
+    </div>
 
-        <!-- Value Proposition -->
-        <section class="value-section fade-in">
-            <div class="value-cards">
-                <div class="value-card">
-                    <h3 data-lang="ko">크리에이터</h3>
-                    <h3 data-lang="en">Creators</h3>
-                    <ul class="value-list">
-                        <li data-lang="ko">팔로워 무관 참여</li>
-                        <li data-lang="en">Join regardless of follower count</li>
-                        <li data-lang="ko">틱톡·인스타·유튜브 쇼츠 모두 인정</li>
-                        <li data-lang="en">TikTok, Instagram, YouTube Shorts</li>
-                        <li data-lang="ko">투명한 자동 정산</li>
-                        <li data-lang="en">Transparent automated settlement</li>
-                    </ul>
-                </div>
-                <div class="value-card">
-                    <h3 data-lang="ko">광고주</h3>
-                    <h3 data-lang="en">Advertisers</h3>
-                    <ul class="value-list">
-                        <li data-lang="ko">10만 원부터 시작</li>
-                        <li data-lang="en">Start from ₩100,000</li>
-                        <li data-lang="ko">조회수 발생 시에만 비용 청구</li>
-                        <li data-lang="en">Pay only for actual views</li>
-                        <li data-lang="ko">실시간 성과 대시보드</li>
-                        <li data-lang="en">Real-time performance dashboard</li>
-                    </ul>
-                </div>
+    <!-- ── VALUE CARDS ── -->
+    <section class="value-section fade-in">
+        <div class="value-cards">
+            <div class="value-card">
+                <div class="value-card-badge badge-creator" data-lang="ko">크리에이터</div>
+                <div class="value-card-badge badge-creator" data-lang="en">Creators</div>
+                <h3 data-lang="ko">팔로워 수보다 중요한 건,<br>만들어낸 조회수</h3>
+                <h3 data-lang="en">It's not about followers.<br>It's about the views you create.</h3>
+                <ul class="value-list">
+                    <li data-lang="ko">팔로워 수와 관계없이 참여 가능</li>
+                    <li data-lang="en">Join regardless of follower count</li>
+                    <li data-lang="ko">TikTok, Instagram Reels, YouTube Shorts 지원 예정</li>
+                    <li data-lang="en">TikTok, Reels, YouTube Shorts — planned</li>
+                    <li data-lang="ko">검증된 조회수 기반 보상 구조</li>
+                    <li data-lang="en">Rewards based on verified view performance</li>
+                    <li data-lang="ko">초기 크리에이터 우선 참여 기회</li>
+                    <li data-lang="en">Early access for first creators</li>
+                </ul>
             </div>
-        </section>
+            <div class="value-card">
+                <div class="value-card-badge badge-advertiser" data-lang="ko">브랜드 / 광고주</div>
+                <div class="value-card-badge badge-advertiser" data-lang="en">Brands / Advertisers</div>
+                <h3 data-lang="ko">고정 협찬비 대신,<br>성과 기반 캠페인</h3>
+                <h3 data-lang="en">Performance campaigns,<br>not fixed sponsorship fees</h3>
+                <ul class="value-list">
+                    <li data-lang="ko">최소 50만 원부터 캠페인 시작</li>
+                    <li data-lang="en">Start campaigns from ₩500K</li>
+                    <li data-lang="ko">검증된 조회수에 대해서만 정산</li>
+                    <li data-lang="en">Pay only for verified view performance</li>
+                    <li data-lang="ko">여러 크리에이터가 동시 참여</li>
+                    <li data-lang="en">Multiple creators promote your brand at once</li>
+                    <li data-lang="ko">콘텐츠별 성과 리포트 제공 예정</li>
+                    <li data-lang="en">Content-level performance reports planned</li>
+                </ul>
+            </div>
+        </div>
+    </section>
 
-        <!-- Waitlist Form -->
-        <section id="waitlist" class="waitlist-section fade-in">
-            <div class="waitlist-card">
-                <div class="waitlist-title">
-                    <h2 data-lang="ko">지금 등록하고<br>가장 먼저 시작하세요</h2>
-                    <h2 data-lang="en">Join the waitlist<br>to get early access</h2>
+    <!-- ── WAITLIST ── -->
+    <section id="waitlist" class="waitlist-section fade-in">
+        <div class="waitlist-inner">
+            <div class="waitlist-header">
+                <div class="section-tag" style="margin: 0 auto 16px; display:inline-flex;">
+                    <span class="dot"></span>
+                    <span data-lang="ko">파일럿 모집 중</span>
+                    <span data-lang="en">Pilot Applications Open</span>
                 </div>
+                <h2 class="waitlist-title">
+                    <span data-lang="ko">첫 번째 캠페인에<br>먼저 참여하세요</span>
+                    <span data-lang="en">Get early access<br>to the first campaigns</span>
+                </h2>
+                <p class="waitlist-sub">
+                    <span data-lang="ko">ViewPay는 현재 광고주와 크리에이터 파일럿 참여자를 모집 중입니다.<br>신청자에게는 초기 캠페인 오픈 소식과 참여 안내를 먼저 전달합니다.</span>
+                    <span data-lang="en">ViewPay is now inviting early brands and creators for pilot campaigns.<br>Sign up to get notified when the first campaigns open.</span>
+                </p>
+            </div>
 
+            <div class="waitlist-card">
                 <form id="waitlistForm">
                     <input type="hidden" name="type" id="userType" value="creator">
-                    
+
                     <div class="toggle-group">
                         <button type="button" class="toggle-btn active" data-type="creator">
                             <span data-lang="ko">크리에이터</span><span data-lang="en">Creator</span>
@@ -1137,7 +1312,6 @@
                         </button>
                     </div>
 
-                    <!-- Benefit Card -->
                     <div class="benefit-card visible" id="benefitCard">
                         <div class="benefit-card-label">
                             <span data-lang="ko">대기자 혜택</span><span data-lang="en">Waitlist Benefit</span>
@@ -1160,34 +1334,26 @@
                         </div>
                     </div>
 
-                    <!-- 공통: 이름 -->
                     <div class="form-group">
-                        <label>
-                            <span data-lang="ko">이름</span><span data-lang="en">Name</span>
-                        </label>
+                        <label><span data-lang="ko">이름</span><span data-lang="en">Name</span></label>
                         <input type="text" id="name" name="name">
                         <div class="error-msg" id="nameError">
                             <span data-lang="ko">이름을 입력해주세요.</span><span data-lang="en">Please enter your name.</span>
                         </div>
                     </div>
 
-                    <!-- 공통: 이메일 -->
                     <div class="form-group">
-                        <label>
-                            <span data-lang="ko">이메일</span><span data-lang="en">Email</span>
-                        </label>
+                        <label><span data-lang="ko">이메일</span><span data-lang="en">Email</span></label>
                         <input type="email" id="email" name="email">
                         <div class="error-msg" id="emailError">
                             <span data-lang="ko">올바른 이메일을 입력해주세요.</span><span data-lang="en">Please enter a valid email.</span>
                         </div>
                     </div>
 
-                    <!-- 크리에이터 전용 필드 -->
+                    <!-- 크리에이터 전용 -->
                     <div id="creatorFields">
                         <div class="form-group" id="snsGroup">
-                            <label>
-                                <span data-lang="ko">SNS 계정</span><span data-lang="en">SNS Handle</span>
-                            </label>
+                            <label><span data-lang="ko">SNS 계정</span><span data-lang="en">SNS Handle</span></label>
                             <input type="text" id="sns" name="sns" placeholder="@handle">
                             <div class="error-msg" id="snsError">
                                 <span data-lang="ko">SNS 계정을 입력해주세요.</span><span data-lang="en">Please enter your SNS handle.</span>
@@ -1195,9 +1361,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>
-                                <span data-lang="ko">현재 조회수 (영상 최고 조회수)</span><span data-lang="en">Current Max Views</span>
-                            </label>
+                            <label><span data-lang="ko">현재 조회수 (영상 최고 조회수)</span><span data-lang="en">Current Max Views</span></label>
                             <div class="input-with-unit">
                                 <input type="text" id="currentViews" name="current_views" placeholder="0">
                                 <span class="input-unit"><span data-lang="ko">회</span><span data-lang="en">views</span></span>
@@ -1205,27 +1369,29 @@
                         </div>
 
                         <div class="form-group">
-                            <label>
-                                <span data-lang="ko">목표 조회수</span><span data-lang="en">Target Views</span>
-                            </label>
+                            <label><span data-lang="ko">목표 조회수</span><span data-lang="en">Target Views</span></label>
                             <div class="input-with-unit">
                                 <input type="text" id="targetViews" name="target_views" placeholder="0">
                                 <span class="input-unit"><span data-lang="ko">회</span><span data-lang="en">views</span></span>
                             </div>
                             <div class="calc-box" id="creatorCalcBox">
-                                <div class="calc-box-label"><span data-lang="ko">예상 수익 (1,000회당 ₩1,000 기준)</span><span data-lang="en">Est. Revenue (₩1,000 per 1K views)</span></div>
+                                <div class="calc-box-label">
+                                    <span data-lang="ko">목표 조회수 기준 예상 보상 예시 (1,000회당 ₩1,000 기준)</span>
+                                    <span data-lang="en">Estimated reward example based on target views (₩1,000 per 1K views)</span>
+                                </div>
                                 <div class="calc-box-value" id="creatorCalcValue">₩0</div>
-                                <div class="calc-box-desc"><span data-lang="ko">목표 조회수 달성 시 예상 수익입니다.</span><span data-lang="en">Estimated revenue upon reaching target views.</span></div>
+                                <div class="calc-box-desc">
+                                    <span data-lang="ko">실제 보상은 캠페인 단가와 검증된 조회수에 따라 달라집니다.</span>
+                                    <span data-lang="en">Actual reward depends on campaign rate and verified view performance.</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 광고주 전용 필드 -->
+                    <!-- 광고주 전용 -->
                     <div id="advertiserFields" style="display: none;">
                         <div class="form-group" id="companyGroup">
-                            <label>
-                                <span data-lang="ko">상호명</span><span data-lang="en">Company Name</span>
-                            </label>
+                            <label><span data-lang="ko">상호명</span><span data-lang="en">Company Name</span></label>
                             <input type="text" id="company" name="company">
                             <div class="error-msg" id="companyError">
                                 <span data-lang="ko">상호명을 입력해주세요.</span><span data-lang="en">Please enter your company name.</span>
@@ -1233,17 +1399,21 @@
                         </div>
 
                         <div class="form-group">
-                            <label>
-                                <span data-lang="ko">마케팅 예산</span><span data-lang="en">Marketing Budget</span>
-                            </label>
+                            <label><span data-lang="ko">캠페인 예산 (마케팅 예산)</span><span data-lang="en">Campaign Budget</span></label>
                             <div class="input-with-unit">
                                 <input type="text" id="budget" name="budget" placeholder="0">
                                 <span class="input-unit">₩</span>
                             </div>
                             <div class="calc-box" id="advertiserCalcBox">
-                                <div class="calc-box-label"><span data-lang="ko">예상 조회수 (1,000회당 ₩1,000 기준)</span><span data-lang="en">Est. Views (₩1,000 per 1K views)</span></div>
+                                <div class="calc-box-label">
+                                    <span data-lang="ko">이 예산으로 운영 가능한 조회수 정산 예시 (1,000회당 ₩1,000 기준)</span>
+                                    <span data-lang="en">Example view settlement range for this budget (₩1,000 per 1K views)</span>
+                                </div>
                                 <div class="calc-box-value" id="advertiserCalcValue">0 <span data-lang="ko">회</span><span data-lang="en">views</span></div>
-                                <div class="calc-box-desc"><span data-lang="ko">예산 전액 사용 시 예상 조회수입니다.</span><span data-lang="en">Estimated views if full budget is used.</span></div>
+                                <div class="calc-box-desc">
+                                    <span data-lang="ko">실제 정산은 검증된 조회수와 캠페인 조건에 따라 달라질 수 있습니다.</span>
+                                    <span data-lang="en">Actual settlement varies based on verified views and campaign conditions.</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1254,493 +1424,485 @@
                 </form>
 
                 <div id="successState" class="success-state">
-                    <h3 data-lang="ko">등록이 완료되었습니다!</h3>
-                    <h3 data-lang="en">Registration Complete!</h3>
-                    <p data-lang="ko">ViewPay의 소식을 가장 먼저 전해드리겠습니다.</p>
-                    <p data-lang="en">We'll notify you as soon as we launch.</p>
+                    <h3 data-lang="ko">등록이 완료되었습니다.</h3>
+                    <h3 data-lang="en">You're on the list.</h3>
+                    <p data-lang="ko">첫 번째 캠페인 소식을 가장 먼저 전해드릴게요.</p>
+                    <p data-lang="en">We'll send you early access to the first campaigns.</p>
                 </div>
             </div>
-        </section>
-    </main>
-
-    <!-- ═══════════════════ CREATOR MODAL ═══════════════════ -->
-    <div class="modal-overlay" id="modalCreator" role="dialog" aria-modal="true" aria-labelledby="modalCreatorTitle">
-        <div class="modal-container">
-            <button class="modal-close" onclick="closeModal('creator')" aria-label="Close">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l12 12M14 2L2 14"/></svg>
-            </button>
-
-            <div class="modal-tag">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="4" r="2.5"/><path d="M1 11c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg>
-                <span data-lang="ko">크리에이터</span><span data-lang="en">Creator</span>
-            </div>
-
-            <h2 class="modal-title" id="modalCreatorTitle">
-                <span data-lang="ko">크리에이터 이용 방법</span>
-                <span data-lang="en">How ViewPay Works for Creators</span>
-            </h2>
-            <p class="modal-hero" data-lang="ko">팔로워 수와 상관없이, 숏폼 조회수를 수익으로 전환하세요.</p>
-            <p class="modal-hero" data-lang="en">Turn short-form views into earnings, regardless of follower count.</p>
-
-            <div class="modal-steps-label">
-                <span data-lang="ko">이용 단계</span><span data-lang="en">How It Works</span>
-            </div>
-
-            <div class="modal-steps">
-                <!-- Step 1 -->
-                <div class="modal-step-card">
-                    <span class="modal-step-num">01</span>
-                    <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 4v6M4 14h6M24 14h-6M14 24v-6"/><circle cx="14" cy="14" r="10"/></svg>
-                    <div class="modal-step-title" data-lang="ko">대기자 등록</div>
-                    <div class="modal-step-title" data-lang="en">Join the waitlist</div>
-                    <div class="modal-step-text" data-lang="ko">ViewPay 오픈 소식을 가장 먼저 받아보세요.</div>
-                    <div class="modal-step-text" data-lang="en">Get early access when ViewPay opens.</div>
-                </div>
-                <!-- Step 2 -->
-                <div class="modal-step-card">
-                    <span class="modal-step-num">02</span>
-                    <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="6" width="20" height="16" rx="2"/><path d="M8 11h12M8 15h8"/></svg>
-                    <div class="modal-step-title" data-lang="ko">캠페인 선택</div>
-                    <div class="modal-step-title" data-lang="en">Choose a campaign</div>
-                    <div class="modal-step-text" data-lang="ko">내 콘텐츠 스타일에 맞는 브랜드 캠페인을 선택합니다.</div>
-                    <div class="modal-step-text" data-lang="en">Pick brand campaigns that match your content style.</div>
-                </div>
-                <!-- Step 3 -->
-                <div class="modal-step-card">
-                    <span class="modal-step-num">03</span>
-                    <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="14" cy="14" r="10"/><path d="M10 14l3 3 5-5"/></svg>
-                    <div class="modal-step-title" data-lang="ko">숏폼 제작 및 업로드</div>
-                    <div class="modal-step-title" data-lang="en">Create and upload</div>
-                    <div class="modal-step-text" data-lang="ko">TikTok, Instagram Reels, YouTube Shorts에 영상을 업로드합니다.</div>
-                    <div class="modal-step-text" data-lang="en">Post your video on TikTok, Instagram Reels, or YouTube Shorts.</div>
-                </div>
-                <!-- Step 4 -->
-                <div class="modal-step-card">
-                    <span class="modal-step-num">04</span>
-                    <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 18l6-6 4 4 6-8"/><path d="M20 6h4v4"/></svg>
-                    <div class="modal-step-title" data-lang="ko">링크 제출</div>
-                    <div class="modal-step-title" data-lang="en">Submit your link</div>
-                    <div class="modal-step-text" data-lang="ko">업로드한 영상 링크를 ViewPay에 제출합니다.</div>
-                    <div class="modal-step-text" data-lang="en">Submit your uploaded video link to ViewPay.</div>
-                </div>
-                <!-- Step 5 -->
-                <div class="modal-step-card">
-                    <span class="modal-step-num">05</span>
-                    <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="14" cy="14" r="10"/><path d="M14 9v5l3 3"/></svg>
-                    <div class="modal-step-title" data-lang="ko">조회수 기반 정산</div>
-                    <div class="modal-step-title" data-lang="en">Earn from verified views</div>
-                    <div class="modal-step-text" data-lang="ko">확인된 조회수에 따라 수익이 계산됩니다.</div>
-                    <div class="modal-step-text" data-lang="en">Earnings are calculated based on verified views.</div>
-                </div>
-            </div>
-
-            <div class="modal-benefits-label">
-                <span data-lang="ko">크리에이터 혜택</span><span data-lang="en">Creator Benefits</span>
-            </div>
-            <div class="modal-benefits-grid">
-                <div class="modal-benefit-item">
-                    <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
-                    <span data-lang="ko">팔로워 수와 무관하게 참여 가능</span><span data-lang="en">Join regardless of follower count</span>
-                </div>
-                <div class="modal-benefit-item">
-                    <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
-                    <span data-lang="ko">TikTok, Instagram Reels, YouTube Shorts 지원 예정</span><span data-lang="en">TikTok, Instagram Reels, and YouTube Shorts planned</span>
-                </div>
-                <div class="modal-benefit-item">
-                    <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
-                    <span data-lang="ko">조회수 기반의 투명한 수익 구조</span><span data-lang="en">Transparent earnings based on views</span>
-                </div>
-                <div class="modal-benefit-item bonus">
-                    <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
-                    <span class="bonus-text" data-lang="ko">첫 정산 시 <strong>₩5,000 보너스 쿠폰</strong> 제공</span>
-                    <span class="bonus-text" data-lang="en"><strong>₩5,000 bonus coupon</strong> for your first payout withdrawal</span>
-                </div>
-            </div>
-
-            <button class="modal-cta" onclick="modalCTA('creator')">
-                <span data-lang="ko">크리에이터로 대기자 등록하기</span>
-                <span data-lang="en">Join as Creator</span>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M8 3l5 5-5 5"/></svg>
-            </button>
         </div>
-    </div>
+    </section>
+</main>
 
-    <!-- ═══════════════════ ADVERTISER MODAL ═══════════════════ -->
-    <div class="modal-overlay" id="modalAdvertiser" role="dialog" aria-modal="true" aria-labelledby="modalAdvertiserTitle">
-        <div class="modal-container">
-            <button class="modal-close" onclick="closeModal('advertiser')" aria-label="Close">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l12 12M14 2L2 14"/></svg>
-            </button>
-
-            <div class="modal-tag">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="1" y="3" width="10" height="8" rx="1.5"/><path d="M3 3V2a3 3 0 016 0v1"/></svg>
-                <span data-lang="ko">광고주</span><span data-lang="en">Advertiser</span>
-            </div>
-
-            <h2 class="modal-title" id="modalAdvertiserTitle">
-                <span data-lang="ko">광고주 이용 방법</span>
-                <span data-lang="en">How ViewPay Works for Advertisers</span>
-            </h2>
-            <p class="modal-hero" data-lang="ko">예산을 먼저 정하고, 실제 조회수 성과에 맞춰 집행하세요.</p>
-            <p class="modal-hero" data-lang="en">Set your budget first, then pay based on actual view performance.</p>
-
-            <div class="modal-steps-label">
-                <span data-lang="ko">이용 단계</span><span data-lang="en">How It Works</span>
-            </div>
-
-            <div class="modal-steps">
-                <!-- Step 1 -->
-                <div class="modal-step-card">
-                    <span class="modal-step-num">01</span>
-                    <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 4v6M4 14h6M24 14h-6M14 24v-6"/><circle cx="14" cy="14" r="10"/></svg>
-                    <div class="modal-step-title" data-lang="ko">대기자 등록</div>
-                    <div class="modal-step-title" data-lang="en">Join the waitlist</div>
-                    <div class="modal-step-text" data-lang="ko">ViewPay 오픈 시 캠페인 등록 안내를 받아보세요.</div>
-                    <div class="modal-step-text" data-lang="en">Get notified when campaign setup becomes available.</div>
-                </div>
-                <!-- Step 2 -->
-                <div class="modal-step-card">
-                    <span class="modal-step-num">02</span>
-                    <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="6" width="20" height="16" rx="2"/><path d="M8 11h12M8 15h8"/></svg>
-                    <div class="modal-step-title" data-lang="ko">캠페인 설정</div>
-                    <div class="modal-step-title" data-lang="en">Set up your campaign</div>
-                    <div class="modal-step-text" data-lang="ko">예산, 조회수 단가, 홍보 가이드를 설정합니다.</div>
-                    <div class="modal-step-text" data-lang="en">Define your budget, view rate, and content guidelines.</div>
-                </div>
-                <!-- Step 3 -->
-                <div class="modal-step-card">
-                    <span class="modal-step-num">03</span>
-                    <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="4"/><circle cx="20" cy="16" r="3"/><path d="M14 10h3M17 16l-4-3"/></svg>
-                    <div class="modal-step-title" data-lang="ko">크리에이터 참여</div>
-                    <div class="modal-step-title" data-lang="en">Creators join</div>
-                    <div class="modal-step-text" data-lang="ko">여러 크리에이터가 브랜드 숏폼 콘텐츠를 제작합니다.</div>
-                    <div class="modal-step-text" data-lang="en">Multiple creators create short-form content for your brand.</div>
-                </div>
-                <!-- Step 4 -->
-                <div class="modal-step-card">
-                    <span class="modal-step-num">04</span>
-                    <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 18l6-6 4 4 6-8"/><path d="M20 6h4v4"/></svg>
-                    <div class="modal-step-title" data-lang="ko">조회수 확인</div>
-                    <div class="modal-step-title" data-lang="en">Track views</div>
-                    <div class="modal-step-text" data-lang="ko">업로드된 영상의 조회수 성과를 확인합니다.</div>
-                    <div class="modal-step-text" data-lang="en">Monitor the view performance of submitted videos.</div>
-                </div>
-                <!-- Step 5 -->
-                <div class="modal-step-card">
-                    <span class="modal-step-num">05</span>
-                    <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 4v5M14 19v5M5 14H4M24 14h-1"/><circle cx="14" cy="14" r="6"/><path d="M11 14l2 2 4-4"/></svg>
-                    <div class="modal-step-title" data-lang="ko">성과 기반 정산</div>
-                    <div class="modal-step-title" data-lang="en">Pay based on performance</div>
-                    <div class="modal-step-text" data-lang="ko">실제 발생한 조회수에 따라 비용이 계산됩니다.</div>
-                    <div class="modal-step-text" data-lang="en">Costs are calculated based on actual generated views.</div>
-                </div>
-            </div>
-
-            <div class="modal-benefits-label">
-                <span data-lang="ko">광고주 혜택</span><span data-lang="en">Advertiser Benefits</span>
-            </div>
-            <div class="modal-benefits-grid">
-                <div class="modal-benefit-item">
-                    <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
-                    <span data-lang="ko">소규모 예산으로 시작 가능</span><span data-lang="en">Start with a smaller budget</span>
-                </div>
-                <div class="modal-benefit-item">
-                    <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
-                    <span data-lang="ko">조회수 성과 기반 구조</span><span data-lang="en">Performance-based view structure</span>
-                </div>
-                <div class="modal-benefit-item">
-                    <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
-                    <span data-lang="ko">여러 크리에이터가 동시에 홍보</span><span data-lang="en">Multiple creators promote your brand at once</span>
-                </div>
-                <div class="modal-benefit-item bonus">
-                    <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
-                    <span class="bonus-text" data-lang="ko">첫 캠페인 플랫폼 수수료 <strong>50% 할인</strong></span>
-                    <span class="bonus-text" data-lang="en"><strong>50% off</strong> platform fees on your first campaign</span>
-                </div>
-            </div>
-
-            <button class="modal-cta" onclick="modalCTA('advertiser')">
-                <span data-lang="ko">광고주로 대기자 등록하기</span>
-                <span data-lang="en">Join as Advertiser</span>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M8 3l5 5-5 5"/></svg>
-            </button>
+<!-- ═══ CREATOR MODAL ═══ -->
+<div class="modal-overlay" id="modalCreator" role="dialog" aria-modal="true" aria-labelledby="modalCreatorTitle">
+    <div class="modal-container">
+        <button class="modal-close" onclick="closeModal('creator')" aria-label="Close">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg>
+        </button>
+        <div class="modal-tag">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="5" cy="3.5" r="2"/><path d="M1 9.5c0-2.2 1.8-4 4-4s4 1.8 4 4"/></svg>
+            <span data-lang="ko">크리에이터</span><span data-lang="en">Creator</span>
         </div>
+        <h2 class="modal-title" id="modalCreatorTitle">
+            <span data-lang="ko">팔로워 수보다 중요한 건,<br>만들어낸 조회수</span>
+            <span data-lang="en">It's not about follower count.<br>It's about the views you create.</span>
+        </h2>
+        <p class="modal-hero" data-lang="ko">ViewPay는 유명 인플루언서만을 위한 플랫폼이 아닙니다. 초보 크리에이터, 팬, 클리퍼, 부업을 원하는 누구나 캠페인에 참여할 수 있습니다. 콘텐츠가 실제로 만든 조회 성과에 따라 보상을 받을 수 있습니다.</p>
+        <p class="modal-hero" data-lang="en">ViewPay is not only for established influencers. New creators, fans, clippers, and side-hustlers can join campaigns and earn based on the view performance their content creates.</p>
+        <div class="modal-steps-label">
+            <span data-lang="ko">이용 단계</span><span data-lang="en">How It Works</span>
+        </div>
+        <div class="modal-steps">
+            <div class="modal-step-card">
+                <span class="modal-step-num">01</span>
+                <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 4v6M4 14h6M24 14h-6M14 24v-6"/><circle cx="14" cy="14" r="10"/></svg>
+                <div class="modal-step-title" data-lang="ko">사전 등록</div>
+                <div class="modal-step-title" data-lang="en">Sign up early</div>
+                <div class="modal-step-text" data-lang="ko">대기자로 등록하고 첫 캠페인 오픈 소식을 먼저 받아보세요.</div>
+                <div class="modal-step-text" data-lang="en">Join the waitlist and get early access when the first campaigns open.</div>
+            </div>
+            <div class="modal-step-card">
+                <span class="modal-step-num">02</span>
+                <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="6" width="20" height="16" rx="2"/><path d="M8 11h12M8 15h8"/></svg>
+                <div class="modal-step-title" data-lang="ko">캠페인 선택</div>
+                <div class="modal-step-title" data-lang="en">Choose a campaign</div>
+                <div class="modal-step-text" data-lang="ko">내 콘텐츠 스타일에 맞는 브랜드 캠페인을 선택합니다.</div>
+                <div class="modal-step-text" data-lang="en">Pick brand campaigns that match your content style.</div>
+            </div>
+            <div class="modal-step-card">
+                <span class="modal-step-num">03</span>
+                <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="14" cy="14" r="10"/><path d="M10 14l3 3 5-5"/></svg>
+                <div class="modal-step-title" data-lang="ko">숏폼 제작 및 업로드</div>
+                <div class="modal-step-title" data-lang="en">Create and upload</div>
+                <div class="modal-step-text" data-lang="ko">TikTok, Instagram Reels, YouTube Shorts에 영상을 업로드합니다.</div>
+                <div class="modal-step-text" data-lang="en">Post your video on TikTok, Reels, or YouTube Shorts.</div>
+            </div>
+            <div class="modal-step-card">
+                <span class="modal-step-num">04</span>
+                <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 18l6-6 4 4 6-8"/><path d="M20 6h4v4"/></svg>
+                <div class="modal-step-title" data-lang="ko">링크 제출</div>
+                <div class="modal-step-title" data-lang="en">Submit your link</div>
+                <div class="modal-step-text" data-lang="ko">업로드한 영상 링크를 ViewPay에 제출합니다.</div>
+                <div class="modal-step-text" data-lang="en">Submit your video link to ViewPay for verification.</div>
+            </div>
+            <div class="modal-step-card">
+                <span class="modal-step-num">05</span>
+                <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 4v5M14 19v5"/><circle cx="14" cy="14" r="6"/><path d="M11 14l2 2 4-4"/></svg>
+                <div class="modal-step-title" data-lang="ko">조회수 기반 정산</div>
+                <div class="modal-step-title" data-lang="en">Earn from verified views</div>
+                <div class="modal-step-text" data-lang="ko">검증된 조회 성과를 기준으로 보상을 받습니다.</div>
+                <div class="modal-step-text" data-lang="en">Get rewarded based on your verified view performance.</div>
+            </div>
+        </div>
+        <div class="modal-benefits-label">
+            <span data-lang="ko">크리에이터 혜택</span><span data-lang="en">Creator Benefits</span>
+        </div>
+        <div class="modal-benefits-grid">
+            <div class="modal-benefit-item">
+                <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
+                <span data-lang="ko">팔로워 수와 관계없이 참여 가능</span><span data-lang="en">Join regardless of follower count</span>
+            </div>
+            <div class="modal-benefit-item">
+                <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
+                <span data-lang="ko">TikTok, YouTube Shorts, Instagram Reels 지원 예정</span><span data-lang="en">TikTok, YouTube Shorts, Instagram Reels planned</span>
+            </div>
+            <div class="modal-benefit-item">
+                <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
+                <span data-lang="ko">조회수 기반 보상 구조</span><span data-lang="en">Rewards based on view performance</span>
+            </div>
+            <div class="modal-benefit-item bonus">
+                <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
+                <span class="bonus-text" data-lang="ko">초기 크리에이터 <strong>우선 참여 기회</strong></span>
+                <span class="bonus-text" data-lang="en"><strong>Early access</strong> for first creators</span>
+            </div>
+        </div>
+        <button class="modal-cta" onclick="modalCTA('creator')">
+            <span data-lang="ko">크리에이터로 대기자 등록하기</span>
+            <span data-lang="en">Join as Creator</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7h8M7 3l4 4-4 4"/></svg>
+        </button>
     </div>
+</div>
 
-    <footer>
-        <div class="footer-logo">View<span class="footer-logo-pay">Pay</span></div>
-        <p class="footer-text" data-lang="ko">© 2026 ViewPay. All rights reserved.</p>
-        <p class="footer-text" data-lang="en">© 2026 ViewPay. All rights reserved.</p>
-        <p class="privacy-text" data-lang="ko">수집된 정보는 서비스 오픈 알림 외 사용되지 않습니다.</p>
-        <p class="privacy-text" data-lang="en">Your info will only be used for launch notifications.</p>
-    </footer>
+<!-- ═══ ADVERTISER MODAL ═══ -->
+<div class="modal-overlay" id="modalAdvertiser" role="dialog" aria-modal="true" aria-labelledby="modalAdvertiserTitle">
+    <div class="modal-container">
+        <button class="modal-close" onclick="closeModal('advertiser')" aria-label="Close">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg>
+        </button>
+        <div class="modal-tag" style="background:var(--mint-glow); border-color:var(--border-accent); color:var(--mint);">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="1" y="2.5" width="8" height="6" rx="1"/><path d="M3 2.5V2a2 2 0 014 0v.5"/></svg>
+            <span data-lang="ko">브랜드 / 광고주</span><span data-lang="en">Brands / Advertisers</span>
+        </div>
+        <h2 class="modal-title" id="modalAdvertiserTitle">
+            <span data-lang="ko">고정 협찬비 대신,<br>성과 기반 캠페인</span>
+            <span data-lang="en">Performance campaigns,<br>not fixed sponsorship fees</span>
+        </h2>
+        <p class="modal-hero" data-lang="ko">ViewPay에서는 광고주가 캠페인 예산을 먼저 설정하고, 실제 조회 성과가 확인된 콘텐츠에 대해서만 예산 한도 내에서 보상이 정산됩니다. 콘텐츠가 얼마나 노출될지 알기 전에 고정 비용을 확정하는 방식이 아니라, 조회수 기반으로 캠페인을 운영할 수 있습니다.</p>
+        <p class="modal-hero" data-lang="en">With ViewPay, brands set a campaign budget first. Rewards are settled only for content with verified view performance, within the campaign budget. Instead of locking in a fixed sponsorship cost before knowing the result, brands can run short-form campaigns based on actual views.</p>
+        <div class="modal-steps-label">
+            <span data-lang="ko">이용 단계</span><span data-lang="en">How It Works</span>
+        </div>
+        <div class="modal-steps">
+            <div class="modal-step-card">
+                <span class="modal-step-num">01</span>
+                <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="4" width="20" height="20" rx="3"/><path d="M9 14h10M9 10h10M9 18h6"/></svg>
+                <div class="modal-step-title" data-lang="ko">캠페인 등록</div>
+                <div class="modal-step-title" data-lang="en">Register your campaign</div>
+                <div class="modal-step-text" data-lang="ko">예산, 콘텐츠 가이드, 캠페인 조건을 설정합니다.</div>
+                <div class="modal-step-text" data-lang="en">Set your budget, content guidelines, and campaign rules.</div>
+            </div>
+            <div class="modal-step-card">
+                <span class="modal-step-num">02</span>
+                <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="9" r="3"/><circle cx="18" cy="9" r="3"/><circle cx="14" cy="19" r="3"/><path d="M10 12v4M18 12v4M14 16v-4"/></svg>
+                <div class="modal-step-title" data-lang="ko">크리에이터 참여</div>
+                <div class="modal-step-title" data-lang="en">Creators join</div>
+                <div class="modal-step-text" data-lang="ko">여러 크리에이터가 캠페인에 참여해 숏폼을 제작합니다.</div>
+                <div class="modal-step-text" data-lang="en">Multiple creators join and produce short-form content for your brand.</div>
+            </div>
+            <div class="modal-step-card">
+                <span class="modal-step-num">03</span>
+                <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 18l6-6 4 4 6-8"/></svg>
+                <div class="modal-step-title" data-lang="ko">조회수 성과 확인</div>
+                <div class="modal-step-title" data-lang="en">Track view performance</div>
+                <div class="modal-step-text" data-lang="ko">제출된 영상의 조회수 성과를 콘텐츠별로 확인합니다.</div>
+                <div class="modal-step-text" data-lang="en">Monitor view performance for each piece of submitted content.</div>
+            </div>
+            <div class="modal-step-card">
+                <span class="modal-step-num">04</span>
+                <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="14" cy="14" r="10"/><path d="M9 14l3 3 7-7"/></svg>
+                <div class="modal-step-title" data-lang="ko">검증 및 정산</div>
+                <div class="modal-step-title" data-lang="en">Verification & settlement</div>
+                <div class="modal-step-text" data-lang="ko">검증된 조회수에 따라 예산 한도 내에서 보상이 정산됩니다.</div>
+                <div class="modal-step-text" data-lang="en">Rewards are settled within your budget based on verified view performance.</div>
+            </div>
+            <div class="modal-step-card">
+                <span class="modal-step-num">05</span>
+                <svg class="modal-step-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="6" width="20" height="16" rx="2"/><path d="M8 11h12M8 15h8"/></svg>
+                <div class="modal-step-title" data-lang="ko">성과 리포트</div>
+                <div class="modal-step-title" data-lang="en">Performance report</div>
+                <div class="modal-step-text" data-lang="ko">콘텐츠별 성과 리포트를 확인합니다. (예정)</div>
+                <div class="modal-step-text" data-lang="en">Review content-level performance reports. (Planned)</div>
+            </div>
+        </div>
+        <div class="modal-benefits-label">
+            <span data-lang="ko">광고주 혜택</span><span data-lang="en">Advertiser Benefits</span>
+        </div>
+        <div class="modal-benefits-grid">
+            <div class="modal-benefit-item">
+                <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
+                <span data-lang="ko">최소 50만 원부터 캠페인 시작</span><span data-lang="en">Start campaigns from ₩500K</span>
+            </div>
+            <div class="modal-benefit-item">
+                <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
+                <span data-lang="ko">검증된 조회수 기반 정산</span><span data-lang="en">Rewards based on verified views</span>
+            </div>
+            <div class="modal-benefit-item">
+                <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
+                <span data-lang="ko">여러 크리에이터가 동시에 브랜드 홍보</span><span data-lang="en">Multiple creators promote your brand at once</span>
+            </div>
+            <div class="modal-benefit-item bonus">
+                <div class="check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5l2.5 2.5L8 3"/></svg></div>
+                <span class="bonus-text" data-lang="ko">첫 캠페인 플랫폼 수수료 <strong>50% 할인</strong></span>
+                <span class="bonus-text" data-lang="en"><strong>50% off</strong> platform fees on your first campaign</span>
+            </div>
+        </div>
+        <button class="modal-cta" onclick="modalCTA('advertiser')">
+            <span data-lang="ko">광고주로 대기자 등록하기</span>
+            <span data-lang="en">Join as Advertiser</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7h8M7 3l4 4-4 4"/></svg>
+        </button>
+    </div>
+</div>
 
-    <script>
-        // Set initial language
-        document.addEventListener('DOMContentLoaded', () => {
-            const currentLang = document.documentElement.getAttribute('lang') || 'ko';
-            setLanguage(currentLang);
+<footer>
+    <div class="footer-logo">View<span class="footer-logo-pay">Pay</span></div>
+    <p class="footer-text">© 2026 NEXGEN / ViewPay. All rights reserved.</p>
+    <p class="privacy-text" data-lang="ko">수집된 정보는 서비스 오픈 알림 외 사용되지 않습니다.</p>
+    <p class="privacy-text" data-lang="en">Your info will only be used for launch notifications.</p>
+</footer>
+
+<script>
+    // ── Language Switcher ──
+    document.addEventListener('DOMContentLoaded', () => {
+        renderWaitlistCampaigns();
+        const currentLang = document.documentElement.getAttribute('lang') || 'ko';
+        setLanguage(currentLang);
+    });
+
+    function setLanguage(lang) {
+        document.documentElement.setAttribute('lang', lang);
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('btn-' + lang).classList.add('active');
+        document.title = lang === 'ko'
+            ? 'ViewPay | 조회수를 수익으로, 캠페인을 성과로'
+            : 'ViewPay | Turn Views into Revenue';
+        applyLanguageVisibility(lang);
+    }
+
+    function applyLanguageVisibility(lang) {
+        document.querySelectorAll('[data-lang]').forEach(el => {
+            const isActive = el.getAttribute('data-lang') === lang;
+            el.style.display = isActive ? '' : 'none';
         });
+    }
 
-        // Language Switcher
-        function setLanguage(lang) {
-            document.documentElement.setAttribute('lang', lang);
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
+    // ── Intersection Observer ──
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+        });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.fade-in').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom >= 0) el.classList.add('visible');
+        else observer.observe(el);
+    });
+
+    // ── Toggle (Creator / Advertiser) ──
+    const toggleBtns = document.querySelectorAll('.toggle-btn');
+    const userTypeInput = document.getElementById('userType');
+    const creatorFields = document.getElementById('creatorFields');
+    const advertiserFields = document.getElementById('advertiserFields');
+
+    function updateBenefitCard(type) {
+        document.getElementById('benefitCreator').style.display = type === 'creator' ? 'block' : 'none';
+        document.getElementById('benefitAdvertiser').style.display = type === 'advertiser' ? 'block' : 'none';
+    }
+
+    function setWaitlistType(type) {
+        toggleBtns.forEach(b => b.classList.remove('active'));
+        const targetBtn = document.querySelector(`.toggle-btn[data-type="${type}"]`);
+        if (targetBtn) targetBtn.classList.add('active');
+        userTypeInput.value = type;
+        creatorFields.style.display = type === 'creator' ? 'block' : 'none';
+        advertiserFields.style.display = type === 'advertiser' ? 'block' : 'none';
+        updateBenefitCard(type);
+    }
+
+    toggleBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => { e.preventDefault(); setWaitlistType(btn.dataset.type); });
+    });
+    updateBenefitCard('creator');
+
+    // ── Comma formatting ──
+    const commaInputs = ['currentViews', 'targetViews', 'budget'];
+    commaInputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', function() {
+                let cursor = this.selectionStart;
+                let oldLength = this.value.length;
+                let rawValue = this.value.replace(/[^0-9]/g, '');
+                if (rawValue === '') { this.value = ''; return; }
+                let formatted = Number(rawValue).toLocaleString();
+                this.value = formatted;
+                let newLength = formatted.length;
+                cursor = cursor + (newLength - oldLength);
+                this.setSelectionRange(cursor, cursor);
             });
-            document.getElementById('btn-' + lang).classList.add('active');
-            document.title = lang === 'ko' ? 'ViewPay | 모든 조회수를 수익으로' : 'ViewPay | Views become Revenue';
         }
+    });
 
-        // Intersection Observer
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { 
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        document.querySelectorAll('.fade-in').forEach(el => {
-            // Check if element is already in viewport
-            const rect = el.getBoundingClientRect();
-            if (rect.top < window.innerHeight && rect.bottom >= 0) {
-                el.classList.add('visible');
-            } else {
-                observer.observe(el);
-            }
-        });
-
-        // Counter animation
-        const counters = document.querySelectorAll('.counter');
-        let hasAnimated = false;
-        const counterObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !hasAnimated) {
-                    hasAnimated = true;
-                    counters.forEach(counter => {
-                        const target = parseInt(counter.dataset.target);
-                        const duration = 2000;
-                        const start = Date.now();
-                        const animate = () => {
-                            const elapsed = Date.now() - start;
-                            const progress = Math.min(elapsed / duration, 1);
-                            counter.textContent = Math.floor(progress * target).toLocaleString();
-                            if (progress < 1) requestAnimationFrame(animate);
-                        };
-                        animate();
-                    });
-                }
-            });
-        }, { threshold: 0.5 });
-        document.querySelector('.stats-container') && counterObserver.observe(document.querySelector('.stats-container'));
-
-        // Toggle buttons
-        const toggleBtns = document.querySelectorAll('.toggle-btn');
-        const userTypeInput = document.getElementById('userType');
-        const creatorFields = document.getElementById('creatorFields');
-        const advertiserFields = document.getElementById('advertiserFields');
-
-        function updateBenefitCard(type) {
-            document.getElementById('benefitCreator').style.display = type === 'creator' ? 'block' : 'none';
-            document.getElementById('benefitAdvertiser').style.display = type === 'advertiser' ? 'block' : 'none';
+    // ── Realtime calc — Advertiser ──
+    const budgetInput = document.getElementById('budget');
+    budgetInput.addEventListener('input', () => {
+        const rawValue = budgetInput.value.replace(/,/g, '');
+        const budget = parseFloat(rawValue) || 0;
+        const calcBox = document.getElementById('advertiserCalcBox');
+        const calcVal = document.getElementById('advertiserCalcValue');
+        if (budget > 0) {
+            const views = Math.floor(budget / 1000) * 1000;
+            calcVal.innerHTML = views.toLocaleString() + ' <span data-lang="ko">회</span><span data-lang="en">views</span>';
+            calcBox.style.display = 'block';
+            const lang = document.documentElement.getAttribute('lang') || 'ko';
+            applyLanguageVisibility(lang);
+        } else {
+            calcBox.style.display = 'none';
         }
+    });
 
-        function setWaitlistType(type) {
-            toggleBtns.forEach(b => b.classList.remove('active'));
-            const targetBtn = document.querySelector(`.toggle-btn[data-type="${type}"]`);
-            if (targetBtn) targetBtn.classList.add('active');
-            userTypeInput.value = type;
-            creatorFields.style.display = type === 'creator' ? 'block' : 'none';
-            advertiserFields.style.display = type === 'advertiser' ? 'block' : 'none';
-            updateBenefitCard(type);
+    // ── Realtime calc — Creator ──
+    const targetViewsInput = document.getElementById('targetViews');
+    targetViewsInput.addEventListener('input', () => {
+        const rawValue = targetViewsInput.value.replace(/,/g, '');
+        const views = parseFloat(rawValue) || 0;
+        const calcBox = document.getElementById('creatorCalcBox');
+        const calcVal = document.getElementById('creatorCalcValue');
+        if (views > 0) {
+            const revenue = Math.floor(views / 1000) * 1000;
+            calcVal.textContent = '₩' + revenue.toLocaleString();
+            calcBox.style.display = 'block';
+        } else {
+            calcBox.style.display = 'none';
         }
+    });
 
-        toggleBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                setWaitlistType(btn.dataset.type);
-            });
-        });
+    // ── Waitlist campaign marketplace cards ──
+    const CAMPAIGN_STORAGE_KEY = 'viewpayAdvertiserCampaigns';
 
-        // Init benefit card
-        updateBenefitCard('creator');
+    function escapeHTML(value) {
+        return String(value || '').replace(/[&<>"']/g, (char) => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        }[char]));
+    }
 
-        // Utility to format number with commas
-        function formatNumber(val) {
-            if (!val) return "";
-            const num = val.toString().replace(/,/g, "");
-            if (isNaN(num)) return val;
-            return Number(num).toLocaleString();
+    function formatKRW(value) {
+        const num = Number(String(value || '').replace(/[^0-9]/g, '')) || 0;
+        return '₩' + num.toLocaleString();
+    }
+
+    function getStoredCampaigns() {
+        try {
+            return JSON.parse(localStorage.getItem(CAMPAIGN_STORAGE_KEY) || '[]');
+        } catch (error) {
+            return [];
         }
+    }
 
-        // Apply comma formatting to inputs
-        const commaInputs = ['currentViews', 'targetViews', 'budget'];
-        commaInputs.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.addEventListener('input', function(e) {
-                    // 현재 커서 위치 저장
-                    let cursor = this.selectionStart;
-                    let oldLength = this.value.length;
-                    
-                    // 숫자만 추출
-                    let rawValue = this.value.replace(/[^0-9]/g, '');
-                    
-                    if (rawValue === "") {
-                        this.value = "";
-                        return;
-                    }
-
-                    // 콤마 포맷팅
-                    let formatted = Number(rawValue).toLocaleString();
-                    this.value = formatted;
-                    
-                    // 커서 위치 보정 (콤마 추가/삭제에 따른 보정)
-                    let newLength = formatted.length;
-                    cursor = cursor + (newLength - oldLength);
-                    this.setSelectionRange(cursor, cursor);
-                });
-            }
+    function storeAdvertiserCampaign(company, budget) {
+        const cleanCompany = company.trim();
+        const cleanBudget = String(budget || '').replace(/[^0-9]/g, '');
+        if (!cleanCompany || !cleanBudget) return;
+        const campaigns = getStoredCampaigns();
+        campaigns.unshift({
+            id: Date.now(),
+            company: cleanCompany,
+            budget: Number(cleanBudget)
         });
+        localStorage.setItem(CAMPAIGN_STORAGE_KEY, JSON.stringify(campaigns.slice(0, 8)));
+        renderWaitlistCampaigns();
+        applyLanguageVisibility(document.documentElement.getAttribute('lang') || 'ko');
+    }
 
-        // Realtime calc - Advertiser budget
-        const budgetInput = document.getElementById('budget');
-        budgetInput.addEventListener('input', () => {
-            const rawValue = budgetInput.value.replace(/,/g, "");
-            const budget = parseFloat(rawValue) || 0;
-            const calcBox = document.getElementById('advertiserCalcBox');
-            const calcVal = document.getElementById('advertiserCalcValue');
-            if (budget > 0) {
-                const views = Math.floor(budget / 1000) * 1000;
-                calcVal.innerHTML = views.toLocaleString() + ' <span data-lang="ko">회</span><span data-lang="en">views</span>';
-                calcBox.style.display = 'block';
-            } else {
-                calcBox.style.display = 'none';
-            }
+    function renderWaitlistCampaigns() {
+        const grid = document.getElementById('campaignGrid');
+        if (!grid) return;
+        const campaigns = getStoredCampaigns();
+        const empty = document.getElementById('campaignEmpty');
+        if (empty) empty.style.display = campaigns.length ? 'none' : '';
+        grid.querySelectorAll('.campaign-card.generated').forEach(card => card.remove());
+        campaigns.forEach((campaign) => {
+            const card = document.createElement('div');
+            card.className = 'campaign-card generated';
+            card.innerHTML = `
+                <div class="campaign-card-top">
+                    <div>
+                        <div class="campaign-category">Advertiser Waitlist</div>
+                        <div class="campaign-name">${escapeHTML(campaign.company)}</div>
+                    </div>
+                    <span class="status-pill pilot">
+                        <span data-lang="ko">대기중</span>
+                        <span data-lang="en">Waitlist</span>
+                    </span>
+                </div>
+                <p class="campaign-desc">
+                    <span data-lang="ko">광고주 대기자 등록으로 생성된 캠페인 예산입니다.</span>
+                    <span data-lang="en">Campaign budget added from an advertiser waitlist signup.</span>
+                </p>
+                <div class="campaign-platforms">
+                    <span class="platform-badge">TikTok</span>
+                    <span class="platform-badge">Shorts</span>
+                    <span class="platform-badge">Reels</span>
+                </div>
+                <div class="campaign-footer">
+                    <div>
+                        <span class="pool-label">Budget</span>
+                        <span class="pool-amt">${formatKRW(campaign.budget)}</span>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
         });
+    }
 
-        // Realtime calc - Creator target views
-        const targetViewsInput = document.getElementById('targetViews');
-        targetViewsInput.addEventListener('input', () => {
-            const rawValue = targetViewsInput.value.replace(/,/g, "");
-            const views = parseFloat(rawValue) || 0;
-            const calcBox = document.getElementById('creatorCalcBox');
-            const calcVal = document.getElementById('creatorCalcValue');
-            if (views > 0) {
-                const revenue = Math.floor(views / 1000) * 1000;
-                calcVal.textContent = '₩' + revenue.toLocaleString();
-                calcBox.style.display = 'block';
-            } else {
-                calcBox.style.display = 'none';
-            }
-        });
+    // ── Form Submission ──
+    const form = document.getElementById('waitlistForm');
+    const successState = document.getElementById('successState');
+    const YOUR_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcugx39FXi5sEyBL_iFpMK7Bez5Q_-G6-d81qF6laD5zoMSmutU_m389i0oKIVusA/exec';
 
-        // Form submission
-        const form = document.getElementById('waitlistForm');
-        const successState = document.getElementById('successState');
-        const YOUR_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcugx39FXi5sEyBL_iFpMK7Bez5Q_-G6-d81qF6laD5zoMSmutU_m389i0oKIVusA/exec';
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const type = userTypeInput.value;
-            const sns = document.getElementById('sns').value.trim();
-            const company = document.getElementById('company').value.trim();
-            const currentViews = document.getElementById('currentViews').value.replace(/,/g, "").trim();
-            const targetViews = document.getElementById('targetViews').value.replace(/,/g, "").trim();
-            const budget = document.getElementById('budget').value.replace(/,/g, "").trim();
-            let hasError = false;
-            if (!name) { document.getElementById('nameError').style.display = 'block'; hasError = true; }
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('emailError').style.display = 'block'; hasError = true; }
-            if (type === 'creator' && !sns) { document.getElementById('snsError').style.display = 'block'; hasError = true; }
-            if (type === 'advertiser' && !company) { document.getElementById('companyError').style.display = 'block'; hasError = true; }
-            if (hasError) return;
-            const submitBtn = form.querySelector('.submit-btn');
-            submitBtn.disabled = true;
-            const payload = type === 'creator'
-                ? { type, name, email, sns, current_views: currentViews, target_views: targetViews }
-                : { type, name, email, company, budget };
-            try {
-                await fetch(YOUR_APPS_SCRIPT_URL, {
-                    method: 'POST', mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                form.style.display = 'none';
-                successState.style.display = 'block';
-            } catch (error) {
-                form.style.display = 'none';
-                successState.style.display = 'block';
-            }
-        });
-
-        // Parallax effect
-        const heroLines = document.querySelectorAll('.hero-line');
-        document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth) - 0.5;
-            const y = (e.clientY / window.innerHeight) - 0.5;
-            heroLines.forEach((line, index) => {
-                line.style.transform = `translate(${x * (index + 1) * 8}px, ${y * (index + 1) * 8}px)`;
-            });
-        });
-
-        // Magnetic button
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const type = userTypeInput.value;
+        const sns = document.getElementById('sns').value.trim();
+        const company = document.getElementById('company').value.trim();
+        const currentViews = document.getElementById('currentViews').value.replace(/,/g, '').trim();
+        const targetViews = document.getElementById('targetViews').value.replace(/,/g, '').trim();
+        const budget = document.getElementById('budget').value.replace(/,/g, '').trim();
+        let hasError = false;
+        if (!name) { document.getElementById('nameError').style.display = 'block'; hasError = true; }
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('emailError').style.display = 'block'; hasError = true; }
+        if (type === 'creator' && !sns) { document.getElementById('snsError').style.display = 'block'; hasError = true; }
+        if (type === 'advertiser' && !company) { document.getElementById('companyError').style.display = 'block'; hasError = true; }
+        if (hasError) return;
         const submitBtn = form.querySelector('.submit-btn');
-        submitBtn.addEventListener('mousemove', (e) => {
-            const rect = submitBtn.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-            if (Math.sqrt(x*x + y*y) < 80) submitBtn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
-        });
-        submitBtn.addEventListener('mouseleave', () => { submitBtn.style.transform = 'translate(0, 0)'; });
-
-        // ── Modal System ──────────────────────────────────────────
-        function openModal(type) {
-            const overlay = document.getElementById(type === 'creator' ? 'modalCreator' : 'modalAdvertiser');
-            overlay.classList.add('open');
-            document.body.style.overflow = 'hidden';
-            // Scroll overlay to top
-            overlay.querySelector('.modal-container').scrollTop = 0;
+        submitBtn.disabled = true;
+        const payload = type === 'creator'
+            ? { type, name, email, sns, current_views: currentViews, target_views: targetViews }
+            : { type, name, email, company, budget };
+        if (type === 'advertiser') {
+            storeAdvertiserCampaign(company, budget);
         }
-
-        function closeModal(type) {
-            const overlay = document.getElementById(type === 'creator' ? 'modalCreator' : 'modalAdvertiser');
-            overlay.classList.remove('open');
-            document.body.style.overflow = '';
-        }
-
-        function closeAllModals() {
-            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
-            document.body.style.overflow = '';
-        }
-
-        // ESC key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeAllModals();
-        });
-
-        // Click outside modal container
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) closeAllModals();
+        try {
+            await fetch(YOUR_APPS_SCRIPT_URL, {
+                method: 'POST', mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
             });
-        });
-
-        // Modal CTA: close modal, scroll to form, set waitlist type
-        function modalCTA(type) {
-            closeAllModals();
-            setTimeout(() => {
-                setWaitlistType(type);
-                const waitlistSection = document.getElementById('waitlist');
-                if (waitlistSection) {
-                    waitlistSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 350);
+            form.style.display = 'none';
+            successState.style.display = 'block';
+        } catch (error) {
+            form.style.display = 'none';
+            successState.style.display = 'block';
         }
-    </script>
+    });
+
+    // ── Magnetic submit btn ──
+    const submitBtn = form.querySelector('.submit-btn');
+    submitBtn.addEventListener('mousemove', (e) => {
+        const rect = submitBtn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        if (Math.sqrt(x*x + y*y) < 80) submitBtn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+    });
+    submitBtn.addEventListener('mouseleave', () => { submitBtn.style.transform = 'translate(0, 0)'; });
+
+    // ── Modal System ──
+    function openModal(type) {
+        const overlay = document.getElementById(type === 'creator' ? 'modalCreator' : 'modalAdvertiser');
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        overlay.querySelector('.modal-container').scrollTop = 0;
+    }
+    function closeModal(type) {
+        const overlay = document.getElementById(type === 'creator' ? 'modalCreator' : 'modalAdvertiser');
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    function closeAllModals() {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAllModals(); });
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) closeAllModals(); });
+    });
+    function modalCTA(type) {
+        closeAllModals();
+        setTimeout(() => {
+            setWaitlistType(type);
+            const waitlistSection = document.getElementById('waitlist');
+            if (waitlistSection) waitlistSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 350);
+    }
+</script>
 </body>
 </html>
