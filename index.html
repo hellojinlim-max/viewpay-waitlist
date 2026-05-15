@@ -1689,7 +1689,8 @@
 <script>
     // ── Language Switcher ──
     document.addEventListener('DOMContentLoaded', () => {
-        creatorWaitlistCount = getStoredCreators().length;
+        clearLocalWaitlistCache();
+        creatorWaitlistCount = 0;
         renderWaitlistCampaigns();
         startCreatorCountLoop(false);
         syncWaitlistFromSheet();
@@ -1856,6 +1857,15 @@
             localStorage.setItem(CREATOR_STORAGE_KEY, JSON.stringify(creators));
         } catch (error) {
             console.warn('Creator cache update skipped:', error);
+        }
+    }
+
+    function clearLocalWaitlistCache() {
+        try {
+            localStorage.removeItem(CAMPAIGN_STORAGE_KEY);
+            localStorage.removeItem(CREATOR_STORAGE_KEY);
+        } catch (error) {
+            console.warn('Local waitlist cache clear skipped:', error);
         }
     }
 
@@ -2049,6 +2059,11 @@
             applyLanguageVisibility(document.documentElement.getAttribute('lang') || 'ko');
         } catch (error) {
             console.warn('Google Sheet sync skipped. Add doGet to Apps Script to enable live sync:', error);
+            clearLocalWaitlistCache();
+            creatorWaitlistCount = 0;
+            renderWaitlistCampaigns();
+            startCreatorCountLoop(false);
+            applyLanguageVisibility(document.documentElement.getAttribute('lang') || 'ko');
         }
     }
 
