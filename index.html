@@ -1689,8 +1689,11 @@
 <script>
     // ── Language Switcher ──
     document.addEventListener('DOMContentLoaded', () => {
+        creatorWaitlistCount = getStoredCreators().length;
         renderWaitlistCampaigns();
         startCreatorCountLoop(false);
+        syncWaitlistFromSheet();
+        setInterval(syncWaitlistFromSheet, 30000);
         const currentLang = document.documentElement.getAttribute('lang') || 'ko';
         setLanguage(currentLang);
     });
@@ -1806,6 +1809,7 @@
     // ── Waitlist campaign marketplace cards ──
     const CAMPAIGN_STORAGE_KEY = 'viewpayAdvertiserCampaigns';
     const CREATOR_STORAGE_KEY = 'viewpayCreatorWaitlistSignups';
+    let creatorWaitlistCount = 0;
     let creatorCountTimer = null;
 
     function escapeHTML(value) {
@@ -1839,6 +1843,22 @@
         }
     }
 
+    function setStoredCampaigns(campaigns) {
+        try {
+            localStorage.setItem(CAMPAIGN_STORAGE_KEY, JSON.stringify(campaigns.slice(0, 8)));
+        } catch (error) {
+            console.warn('Campaign cache update skipped:', error);
+        }
+    }
+
+    function setStoredCreators(creators) {
+        try {
+            localStorage.setItem(CREATOR_STORAGE_KEY, JSON.stringify(creators));
+        } catch (error) {
+            console.warn('Creator cache update skipped:', error);
+        }
+    }
+
     function storeCreatorSignup(name, email, sns, targetViews) {
         try {
             const creators = getStoredCreators();
@@ -1856,8 +1876,9 @@
                     sns: cleanSns,
                     targetViews: String(targetViews || '').replace(/[^0-9]/g, '')
                 });
-                localStorage.setItem(CREATOR_STORAGE_KEY, JSON.stringify(creators));
+                setStoredCreators(creators);
             }
+            creatorWaitlistCount = getStoredCreators().length;
             startCreatorCountLoop(true);
         } catch (error) {
             console.warn('Creator counter update skipped:', error);
@@ -1865,7 +1886,7 @@
     }
 
     function getCreatorWaitlistCount() {
-        return getStoredCreators().length;
+        return creatorWaitlistCount;
     }
 
     function setCreatorCountDisplay(value) {
@@ -1878,15 +1899,34 @@
         const numberEl = document.getElementById('creatorCountNumber');
         if (!numberEl) return;
         const target = getCreatorWaitlistCount();
+        const digitCount = Math.max(1, String(Math.max(0, target)).length);
+        const minValue = digitCount === 1 ? 0 : Math.pow(10, digitCount - 1);
+        const maxValue = Math.pow(10, digitCount) - 1;
+        const approachOffset = Math.min(3, Math.max(1, Math.floor(maxValue * 0.12)));
+        const approachStart = target > minValue + approachOffset
+            ? target - approachOffset
+            : Math.min(maxValue, target + approachOffset);
         const start = performance.now();
-        const maxRoll = Math.max(target + 18, 30);
+        let lastRoll = 0;
         function frame(now) {
             const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
             if (elapsed >= duration) {
                 setCreatorCountDisplay(target);
                 return;
             }
-            numberEl.textContent = Math.floor(Math.random() * (maxRoll + 1)).toLocaleString();
+            if (progress < 0.62) {
+                if (now - lastRoll > 75) {
+                    const rolled = minValue + Math.floor(Math.random() * (maxValue - minValue + 1));
+                    numberEl.textContent = rolled.toLocaleString();
+                    lastRoll = now;
+                }
+            } else {
+                const slowProgress = (progress - 0.62) / 0.38;
+                const eased = 1 - Math.pow(1 - slowProgress, 3);
+                const value = Math.round(approachStart + (target - approachStart) * eased);
+                numberEl.textContent = value.toLocaleString();
+            }
             requestAnimationFrame(frame);
         }
         requestAnimationFrame(frame);
@@ -1920,7 +1960,7 @@
                 company: cleanCompany,
                 budget: Number(cleanBudget)
             });
-            localStorage.setItem(CAMPAIGN_STORAGE_KEY, JSON.stringify(campaigns.slice(0, 8)));
+            setStoredCampaigns(campaigns);
             renderWaitlistCampaigns();
             applyLanguageVisibility(document.documentElement.getAttribute('lang') || 'ko');
         } catch (error) {
@@ -1969,6 +2009,49 @@
         });
     }
 
+    function normalizeWaitlistData(data) {
+        const rows = Array.isArray(data)
+            ? data
+            : (data.rows || data.data || data.entries || []);
+        const advertisersRaw = data.advertisers || rows.filter(row => String(row.type || '').toLowerCase() === 'advertiser');
+        const creatorsRaw = data.creators || rows.filter(row => String(row.type || '').toLowerCase() === 'creator');
+        const advertisers = advertisersRaw
+            .map((row, index) => ({
+                id: row.id || row.timestamp || index,
+                company: row.company || row.companyName || row.company_name || row.name || '',
+                budget: row.budget || row.campaignBudget || row.campaign_budget || 0
+            }))
+            .filter(row => row.company && row.budget);
+        const creatorCount = Number(
+            data.creatorCount ??
+            data.creatorsCount ??
+            data.creator_count ??
+            creatorsRaw.length ??
+            0
+        ) || 0;
+        return { advertisers, creatorCount, creators: creatorsRaw };
+    }
+
+    async function syncWaitlistFromSheet() {
+        try {
+            const response = await fetch(`${YOUR_APPS_SCRIPT_URL}?action=list&t=${Date.now()}`, {
+                method: 'GET',
+                cache: 'no-store'
+            });
+            if (!response.ok) throw new Error(`Sheet sync failed: ${response.status}`);
+            const data = await response.json();
+            const normalized = normalizeWaitlistData(data);
+            setStoredCampaigns(normalized.advertisers);
+            setStoredCreators(normalized.creators || []);
+            creatorWaitlistCount = normalized.creatorCount;
+            renderWaitlistCampaigns();
+            startCreatorCountLoop(false);
+            applyLanguageVisibility(document.documentElement.getAttribute('lang') || 'ko');
+        } catch (error) {
+            console.warn('Google Sheet sync skipped. Add doGet to Apps Script to enable live sync:', error);
+        }
+    }
+
     // ── Form Submission ──
     const form = document.getElementById('waitlistForm');
     const successState = document.getElementById('successState');
@@ -2008,6 +2091,7 @@
             if (type === 'advertiser') {
                 storeAdvertiserCampaign(company, budget);
             }
+            syncWaitlistFromSheet();
             form.style.display = 'none';
             successState.style.display = 'block';
         } catch (error) {
