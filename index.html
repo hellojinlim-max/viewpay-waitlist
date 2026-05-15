@@ -498,9 +498,42 @@
             text-shadow: 0 0 24px rgba(53,242,154,0.24);
         }
         .creator-count-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.01em;
             font-size: clamp(48px, 7vw, 72px);
             line-height: 1;
             font-variant-numeric: tabular-nums;
+            min-width: 0.7em;
+        }
+        .creator-count-digit {
+            display: inline-block;
+            position: relative;
+            width: 0.64em;
+            height: 1em;
+            overflow: hidden;
+            vertical-align: bottom;
+        }
+        .creator-count-reel {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            will-change: transform;
+            transform: translate3d(0, 0, 0);
+        }
+        .creator-count-reel span {
+            display: block;
+            height: 1em;
+            line-height: 1em;
+            text-align: center;
+        }
+        .creator-count-separator {
+            display: inline-block;
+            width: 0.26em;
+            text-align: center;
+            transform: translateY(-0.02em);
         }
         .creator-count-unit {
             font-family: 'Pretendard', sans-serif;
@@ -1203,10 +1236,10 @@
         </div>
         <div class="campaign-grid" id="campaignGrid">
             <div class="campaign-empty" id="campaignEmpty">
-                <strong data-lang="ko">아직 등록된 광고주 캠페인이 없습니다.</strong>
-                <strong data-lang="en">No advertiser campaigns yet.</strong>
-                <span data-lang="ko">광고주로 대기자 등록하면 상호명과 예산이 이곳에 표시됩니다.</span>
-                <span data-lang="en">Join as an advertiser and your brand name and budget will appear here.</span>
+                <strong data-lang="ko">캠페인 정보를 불러오는 중입니다.</strong>
+                <strong data-lang="en">Loading campaign data.</strong>
+                <span data-lang="ko">Google Sheet와 동기화하고 있습니다.</span>
+                <span data-lang="en">Syncing with Google Sheet.</span>
             </div>
         </div>
     </section>
@@ -1689,14 +1722,18 @@
 <script>
     // ── Language Switcher ──
     document.addEventListener('DOMContentLoaded', () => {
-        clearLocalWaitlistCache();
-        creatorWaitlistCount = 0;
-        renderWaitlistCampaigns();
+        const cachedCampaigns = getStoredCampaigns();
+        creatorWaitlistCount = getStoredCreators().length;
+        if (cachedCampaigns.length) {
+            renderWaitlistCampaigns();
+        } else {
+            setCampaignEmptyState('loading');
+        }
         startCreatorCountLoop(false);
-        syncWaitlistFromSheet();
-        setInterval(syncWaitlistFromSheet, 30000);
         const currentLang = document.documentElement.getAttribute('lang') || 'ko';
         setLanguage(currentLang);
+        syncWaitlistFromSheet();
+        setInterval(syncWaitlistFromSheet, 30000);
     });
 
     function setLanguage(lang) {
@@ -1812,6 +1849,8 @@
     const CREATOR_STORAGE_KEY = 'viewpayCreatorWaitlistSignups';
     let creatorWaitlistCount = 0;
     let creatorCountTimer = null;
+    let displayedCreatorCount = 0;
+    let creatorCountAnimationToken = 0;
 
     function escapeHTML(value) {
         return String(value || '').replace(/[&<>"']/g, (char) => ({
@@ -1899,47 +1938,91 @@
         return creatorWaitlistCount;
     }
 
-    function setCreatorCountDisplay(value) {
+    function getPlainCount(value) {
+        return String(Math.max(0, Number(value) || 0));
+    }
+
+    function buildDigitReel(startDigit, targetDigit, rotations) {
+        const digit = document.createElement('span');
+        digit.className = 'creator-count-digit';
+        const reel = document.createElement('span');
+        reel.className = 'creator-count-reel';
+
+        const totalRows = rotations * 10 + targetDigit + 1;
+        for (let index = 0; index < totalRows; index += 1) {
+            const item = document.createElement('span');
+            item.textContent = index % 10;
+            reel.appendChild(item);
+        }
+
+        reel.style.transform = `translate3d(0, -${startDigit}em, 0)`;
+        digit.appendChild(reel);
+        return { digit, reel, targetOffset: rotations * 10 + targetDigit };
+    }
+
+    function renderCreatorCount(value, options = {}) {
         const numberEl = document.getElementById('creatorCountNumber');
         if (!numberEl) return;
-        numberEl.textContent = Math.max(0, Number(value) || 0).toLocaleString();
+        creatorCountAnimationToken += 1;
+        const animationToken = creatorCountAnimationToken;
+        const targetValue = Math.max(0, Number(value) || 0);
+        const targetPlain = getPlainCount(targetValue);
+        const startPlain = getPlainCount(displayedCreatorCount).padStart(targetPlain.length, '0').slice(-targetPlain.length);
+        const targetText = targetValue.toLocaleString();
+        const shouldAnimate = options.animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        numberEl.setAttribute('aria-label', targetText);
+        numberEl.innerHTML = '';
+
+        if (!shouldAnimate) {
+            numberEl.textContent = targetText;
+            displayedCreatorCount = targetValue;
+            return;
+        }
+
+        let digitIndex = 0;
+        const reels = [];
+        [...targetText].forEach((char) => {
+            if (/\d/.test(char)) {
+                const startDigit = Number(startPlain[digitIndex] || 0);
+                const targetDigit = Number(char);
+                const rotations = 4 + Math.min(3, targetPlain.length - digitIndex);
+                const reelData = buildDigitReel(startDigit, targetDigit, rotations);
+                numberEl.appendChild(reelData.digit);
+                reels.push({ ...reelData, digitIndex });
+                digitIndex += 1;
+            } else {
+                const separator = document.createElement('span');
+                separator.className = 'creator-count-separator';
+                separator.textContent = char;
+                numberEl.appendChild(separator);
+            }
+        });
+
+        requestAnimationFrame(() => {
+            reels.forEach(({ reel, targetOffset, digitIndex: index }) => {
+                const delay = index * 90;
+                const duration = (options.duration || 2200) + index * 170;
+                reel.style.transition = `transform ${duration}ms cubic-bezier(0.12, 0.78, 0.16, 1) ${delay}ms`;
+                reel.style.transform = `translate3d(0, -${targetOffset}em, 0)`;
+            });
+        });
+
+        const totalDuration = (options.duration || 2200) + reels.length * 190 + 120;
+        window.setTimeout(() => {
+            if (animationToken !== creatorCountAnimationToken) return;
+            displayedCreatorCount = targetValue;
+            numberEl.setAttribute('aria-label', targetValue.toLocaleString());
+        }, totalDuration);
+    }
+
+    function setCreatorCountDisplay(value) {
+        renderCreatorCount(value, { animate: false });
     }
 
     function spinCreatorCount(duration = 3000) {
-        const numberEl = document.getElementById('creatorCountNumber');
-        if (!numberEl) return;
         const target = getCreatorWaitlistCount();
-        const digitCount = Math.max(1, String(Math.max(0, target)).length);
-        const minValue = digitCount === 1 ? 0 : Math.pow(10, digitCount - 1);
-        const maxValue = Math.pow(10, digitCount) - 1;
-        const approachOffset = Math.min(3, Math.max(1, Math.floor(maxValue * 0.12)));
-        const approachStart = target > minValue + approachOffset
-            ? target - approachOffset
-            : Math.min(maxValue, target + approachOffset);
-        const start = performance.now();
-        let lastRoll = 0;
-        function frame(now) {
-            const elapsed = now - start;
-            const progress = Math.min(elapsed / duration, 1);
-            if (elapsed >= duration) {
-                setCreatorCountDisplay(target);
-                return;
-            }
-            if (progress < 0.62) {
-                if (now - lastRoll > 75) {
-                    const rolled = minValue + Math.floor(Math.random() * (maxValue - minValue + 1));
-                    numberEl.textContent = rolled.toLocaleString();
-                    lastRoll = now;
-                }
-            } else {
-                const slowProgress = (progress - 0.62) / 0.38;
-                const eased = 1 - Math.pow(1 - slowProgress, 3);
-                const value = Math.round(approachStart + (target - approachStart) * eased);
-                numberEl.textContent = value.toLocaleString();
-            }
-            requestAnimationFrame(frame);
-        }
-        requestAnimationFrame(frame);
+        renderCreatorCount(target, { animate: true, duration });
     }
 
     function startCreatorCountLoop(immediateSpin = false) {
@@ -1983,8 +2066,8 @@
         if (!grid) return;
         const campaigns = getStoredCampaigns();
         const empty = document.getElementById('campaignEmpty');
-        if (empty) empty.style.display = campaigns.length ? 'none' : '';
         grid.querySelectorAll('.campaign-card.generated').forEach(card => card.remove());
+        if (empty) empty.style.display = campaigns.length ? 'none' : '';
         campaigns.forEach((campaign) => {
             const card = document.createElement('div');
             card.className = 'campaign-card generated';
@@ -2017,6 +2100,28 @@
             `;
             grid.appendChild(card);
         });
+    }
+
+    function setCampaignEmptyState(state) {
+        const empty = document.getElementById('campaignEmpty');
+        if (!empty) return;
+        empty.style.display = '';
+        if (state === 'loading') {
+            empty.innerHTML = `
+                <strong data-lang="ko">캠페인 정보를 불러오는 중입니다.</strong>
+                <strong data-lang="en">Loading campaign data.</strong>
+                <span data-lang="ko">Google Sheet와 동기화하고 있습니다.</span>
+                <span data-lang="en">Syncing with Google Sheet.</span>
+            `;
+        } else {
+            empty.innerHTML = `
+                <strong data-lang="ko">아직 등록된 광고주 캠페인이 없습니다.</strong>
+                <strong data-lang="en">No advertiser campaigns yet.</strong>
+                <span data-lang="ko">광고주로 대기자 등록하면 상호명과 예산이 이곳에 표시됩니다.</span>
+                <span data-lang="en">Join as an advertiser and your brand name and budget will appear here.</span>
+            `;
+        }
+        applyLanguageVisibility(document.documentElement.getAttribute('lang') || 'ko');
     }
 
     function normalizeWaitlistData(data) {
@@ -2054,13 +2159,15 @@
             setStoredCampaigns(normalized.advertisers);
             setStoredCreators(normalized.creators || []);
             creatorWaitlistCount = normalized.creatorCount;
+            if (!normalized.advertisers.length) setCampaignEmptyState('empty');
             renderWaitlistCampaigns();
             startCreatorCountLoop(false);
             applyLanguageVisibility(document.documentElement.getAttribute('lang') || 'ko');
         } catch (error) {
             console.warn('Google Sheet sync skipped. Add doGet to Apps Script to enable live sync:', error);
-            clearLocalWaitlistCache();
-            creatorWaitlistCount = 0;
+            const cachedCampaigns = getStoredCampaigns();
+            creatorWaitlistCount = getStoredCreators().length;
+            if (!cachedCampaigns.length) setCampaignEmptyState('empty');
             renderWaitlistCampaigns();
             startCreatorCountLoop(false);
             applyLanguageVisibility(document.documentElement.getAttribute('lang') || 'ko');
