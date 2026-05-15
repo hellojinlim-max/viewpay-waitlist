@@ -467,6 +467,54 @@
             font-size: 15px; color: var(--text-muted);
             max-width: 520px; margin: 0 auto;
         }
+        .creator-count-card {
+            max-width: 620px;
+            margin: 0 auto 44px;
+            background:
+                radial-gradient(circle at 18% 0%, rgba(53,242,154,0.12), transparent 40%),
+                var(--bg-card);
+            border: 1px solid rgba(53,242,154,0.16);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            text-align: center;
+            box-shadow: 0 18px 60px rgba(0,0,0,0.28);
+        }
+        .creator-count-label {
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .creator-count-value {
+            display: inline-flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 8px;
+            min-height: 64px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: var(--mint);
+            text-shadow: 0 0 24px rgba(53,242,154,0.24);
+        }
+        .creator-count-number {
+            font-size: clamp(48px, 7vw, 72px);
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+        .creator-count-unit {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 0;
+            color: rgba(246,248,251,0.84);
+        }
+        .creator-count-note {
+            color: var(--text-dim);
+            font-size: 12px;
+            line-height: 1.5;
+            margin-top: 10px;
+        }
         .campaign-grid {
             display: grid; grid-template-columns: repeat(4, 1fr);
             gap: 14px;
@@ -1124,6 +1172,21 @@
 
     <!-- ── CAMPAIGN MARKETPLACE PREVIEW ── -->
     <section class="marketplace-section fade-in">
+        <div class="creator-count-card">
+            <div class="creator-count-label">
+                <span data-lang="ko">파일럿 참여를 기다리는 크리에이터</span>
+                <span data-lang="en">Creators waiting for pilot access</span>
+            </div>
+            <div class="creator-count-value" aria-live="polite">
+                <span class="creator-count-number" id="creatorCountNumber">0</span>
+                <span class="creator-count-unit" data-lang="ko">명</span>
+                <span class="creator-count-unit" data-lang="en">creators</span>
+            </div>
+            <p class="creator-count-note">
+                <span data-lang="ko">크리에이터 대기자 등록이 들어오면 이 숫자가 업데이트됩니다.</span>
+                <span data-lang="en">This number updates when creators join the waitlist.</span>
+            </p>
+        </div>
         <div class="marketplace-header">
             <div class="section-tag"><span class="dot"></span>
                 <span data-lang="ko">캠페인 마켓플레이스 프리뷰</span>
@@ -1627,6 +1690,7 @@
     // ── Language Switcher ──
     document.addEventListener('DOMContentLoaded', () => {
         renderWaitlistCampaigns();
+        startCreatorCountLoop(false);
         const currentLang = document.documentElement.getAttribute('lang') || 'ko';
         setLanguage(currentLang);
     });
@@ -1741,6 +1805,8 @@
 
     // ── Waitlist campaign marketplace cards ──
     const CAMPAIGN_STORAGE_KEY = 'viewpayAdvertiserCampaigns';
+    const CREATOR_STORAGE_KEY = 'viewpayCreatorWaitlistSignups';
+    let creatorCountTimer = null;
 
     function escapeHTML(value) {
         return String(value || '').replace(/[&<>"']/g, (char) => ({
@@ -1765,19 +1831,101 @@
         }
     }
 
+    function getStoredCreators() {
+        try {
+            return JSON.parse(localStorage.getItem(CREATOR_STORAGE_KEY) || '[]');
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function storeCreatorSignup(name, email, sns, targetViews) {
+        try {
+            const creators = getStoredCreators();
+            const cleanEmail = (email || '').trim().toLowerCase();
+            const cleanSns = (sns || '').trim();
+            const alreadyExists = creators.some(item =>
+                (cleanEmail && item.email === cleanEmail) ||
+                (cleanSns && item.sns && item.sns.toLowerCase() === cleanSns.toLowerCase())
+            );
+            if (!alreadyExists) {
+                creators.push({
+                    id: Date.now(),
+                    name: (name || '').trim(),
+                    email: cleanEmail,
+                    sns: cleanSns,
+                    targetViews: String(targetViews || '').replace(/[^0-9]/g, '')
+                });
+                localStorage.setItem(CREATOR_STORAGE_KEY, JSON.stringify(creators));
+            }
+            startCreatorCountLoop(true);
+        } catch (error) {
+            console.warn('Creator counter update skipped:', error);
+        }
+    }
+
+    function getCreatorWaitlistCount() {
+        return getStoredCreators().length;
+    }
+
+    function setCreatorCountDisplay(value) {
+        const numberEl = document.getElementById('creatorCountNumber');
+        if (!numberEl) return;
+        numberEl.textContent = Math.max(0, Number(value) || 0).toLocaleString();
+    }
+
+    function spinCreatorCount(duration = 3000) {
+        const numberEl = document.getElementById('creatorCountNumber');
+        if (!numberEl) return;
+        const target = getCreatorWaitlistCount();
+        const start = performance.now();
+        const maxRoll = Math.max(target + 18, 30);
+        function frame(now) {
+            const elapsed = now - start;
+            if (elapsed >= duration) {
+                setCreatorCountDisplay(target);
+                return;
+            }
+            numberEl.textContent = Math.floor(Math.random() * (maxRoll + 1)).toLocaleString();
+            requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+    }
+
+    function startCreatorCountLoop(immediateSpin = false) {
+        if (creatorCountTimer) clearTimeout(creatorCountTimer);
+        const target = getCreatorWaitlistCount();
+        if (immediateSpin) spinCreatorCount(1400);
+        else setCreatorCountDisplay(target);
+
+        if (target === 0) return;
+
+        function scheduleNext() {
+            creatorCountTimer = setTimeout(() => {
+                spinCreatorCount(3000);
+                creatorCountTimer = setTimeout(scheduleNext, 8000);
+            }, 5000);
+        }
+        scheduleNext();
+    }
+
     function storeAdvertiserCampaign(company, budget) {
-        const cleanCompany = company.trim();
-        const cleanBudget = String(budget || '').replace(/[^0-9]/g, '');
-        if (!cleanCompany || !cleanBudget) return;
-        const campaigns = getStoredCampaigns();
-        campaigns.unshift({
-            id: Date.now(),
-            company: cleanCompany,
-            budget: Number(cleanBudget)
-        });
-        localStorage.setItem(CAMPAIGN_STORAGE_KEY, JSON.stringify(campaigns.slice(0, 8)));
-        renderWaitlistCampaigns();
-        applyLanguageVisibility(document.documentElement.getAttribute('lang') || 'ko');
+        try {
+            const cleanCompany = company.trim();
+            const cleanBudget = String(budget || '').replace(/[^0-9]/g, '');
+            if (!cleanCompany || !cleanBudget) return;
+            const campaigns = getStoredCampaigns();
+            campaigns.unshift({
+                id: Date.now(),
+                company: cleanCompany,
+                budget: Number(cleanBudget)
+            });
+            localStorage.setItem(CAMPAIGN_STORAGE_KEY, JSON.stringify(campaigns.slice(0, 8)));
+            renderWaitlistCampaigns();
+            applyLanguageVisibility(document.documentElement.getAttribute('lang') || 'ko');
+        } catch (error) {
+            console.warn('Campaign preview update skipped:', error);
+        }
     }
 
     function renderWaitlistCampaigns() {
@@ -1848,18 +1996,27 @@
         const payload = type === 'creator'
             ? { type, name, email, sns, current_views: currentViews, target_views: targetViews }
             : { type, name, email, company, budget };
-        if (type === 'advertiser') {
-            storeAdvertiserCampaign(company, budget);
-        }
         try {
             await fetch(YOUR_APPS_SCRIPT_URL, {
                 method: 'POST', mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+            if (type === 'creator') {
+                storeCreatorSignup(name, email, sns, targetViews);
+            }
+            if (type === 'advertiser') {
+                storeAdvertiserCampaign(company, budget);
+            }
             form.style.display = 'none';
             successState.style.display = 'block';
         } catch (error) {
+            if (type === 'creator') {
+                storeCreatorSignup(name, email, sns, targetViews);
+            }
+            if (type === 'advertiser') {
+                storeAdvertiserCampaign(company, budget);
+            }
             form.style.display = 'none';
             successState.style.display = 'block';
         }
