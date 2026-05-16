@@ -487,12 +487,12 @@
         }
         .creator-count-value {
             display: inline-flex;
-            align-items: baseline;
+            align-items: flex-end;
             justify-content: center;
             gap: 8px;
             min-height: 64px;
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
             letter-spacing: 0;
             color: var(--mint);
             text-shadow: 0 0 24px rgba(53,242,154,0.24);
@@ -505,16 +505,17 @@
             font-size: clamp(48px, 7vw, 72px);
             line-height: 1;
             font-variant-numeric: tabular-nums;
-            min-width: 0.9em;
+            min-width: 1.25ch;
+            overflow: visible;
         }
         .creator-count-digit {
             display: inline-block;
             position: relative;
-            width: 0.86em;
+            width: 1.18ch;
             height: 1em;
             overflow: hidden;
             vertical-align: bottom;
-            flex: 0 0 0.86em;
+            flex: 0 0 1.18ch;
         }
         .creator-count-reel {
             position: absolute;
@@ -542,6 +543,7 @@
             font-weight: 800;
             letter-spacing: 0;
             color: rgba(246,248,251,0.84);
+            padding-bottom: 0.35em;
         }
         .creator-count-note {
             color: var(--text-dim);
@@ -2001,7 +2003,7 @@
 
         requestAnimationFrame(() => {
             reels.forEach(({ digit, reel, startDigit, targetOffset, digitIndex: index }) => {
-                const digitHeight = digit.getBoundingClientRect().height || parseFloat(getComputedStyle(digit).fontSize) || 72;
+                const digitHeight = reel.firstElementChild?.getBoundingClientRect().height || digit.getBoundingClientRect().height || parseFloat(getComputedStyle(digit).fontSize) || 72;
                 const delay = index * 90;
                 const duration = (options.duration || 2200) + index * 170;
                 reel.style.transform = `translate3d(0, -${startDigit * digitHeight}px, 0)`;
@@ -2016,7 +2018,6 @@
         window.setTimeout(() => {
             if (animationToken !== creatorCountAnimationToken) return;
             displayedCreatorCount = targetValue;
-            numberEl.textContent = targetValue.toLocaleString();
             numberEl.setAttribute('aria-label', targetValue.toLocaleString());
         }, totalDuration);
     }
@@ -2033,8 +2034,10 @@
     function startCreatorCountLoop(immediateSpin = false) {
         if (creatorCountTimer) clearTimeout(creatorCountTimer);
         const target = getCreatorWaitlistCount();
+        const numberEl = document.getElementById('creatorCountNumber');
+        const isRolling = !!numberEl?.querySelector('.creator-count-reel');
         if (immediateSpin) spinCreatorCount(1400);
-        else setCreatorCountDisplay(target);
+        else if (!isRolling && (target !== displayedCreatorCount || !numberEl?.textContent.trim())) setCreatorCountDisplay(target);
 
         if (target === 0) return;
 
